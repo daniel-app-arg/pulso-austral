@@ -1,0 +1,16 @@
+{
+  "artboards": [
+    { "file": "Main.dc.html", "x": 0, "y": 0, "w": 1400, "h": 460, "page": "page-1" },
+    { "file": "SolPulso.dc.html", "x": 0, "y": 0, "w": 480, "h": 780, "page": "page-2" },
+    { "file": "CruzDelSur.dc.html", "x": 560, "y": 0, "w": 480, "h": 780, "page": "page-2" },
+    { "file": "Horizonte.dc.html", "x": 1120, "y": 0, "w": 480, "h": 780, "page": "page-2" },
+    { "file": "CostaEste.dc.html", "x": 1680, "y": 0, "w": 480, "h": 780, "page": "page-2" },
+    { "file": "OndasAustrales.dc.html", "x": 2240, "y": 0, "w": 480, "h": 780, "page": "page-2" },
+    { "file": "PulsoCeleste.dc.html", "x": 2800, "y": 0, "w": 480, "h": 780, "page": "page-2" }
+  ],
+  "pages": [
+    { "id": "page-1", "name": "Pulso Austral" },
+    { "id": "page-2", "name": "Otras direcciones" }
+  ],
+  "launch": { "view": "canvas", "page": "page-1" }
+}

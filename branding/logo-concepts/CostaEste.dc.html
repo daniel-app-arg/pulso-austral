@@ -1,0 +1,94 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+  <style>
+    body { margin: 0; }
+    .board { width: 100%; height: 100%; background: #EDE7D9; font-family: 'IBM Plex Sans', sans-serif; color: #1A1A17; box-sizing: border-box; padding: 32px; display: flex; flex-direction: column; gap: 22px; }
+    .kicker { font-size: 12px; letter-spacing: .04em; text-transform: uppercase; color: #5B5648; }
+    .title { font-family: 'Fraunces', serif; font-size: 22px; font-weight: 600; margin: 4px 0 0 0; line-height: 1.25; }
+    .rationale { font-size: 13px; color: #5B5648; line-height: 1.5; }
+    .hero { display: flex; align-items: center; justify-content: center; padding: 12px 0; }
+    .hero .icon { width: 130px; height: 160px; }
+    .section-label { font-size: 11px; text-transform: uppercase; letter-spacing: .05em; color: #5B5648; margin-bottom: 10px; }
+    .favicon-row { display: flex; gap: 18px; align-items: flex-end; }
+    .fav-swatch { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+    .fav-box { background: white; border: 1px solid #D8D0BC; border-radius: 6px; display: flex; align-items: center; justify-content: center; box-shadow: 0 1px 3px rgba(0,0,0,.08); }
+    .fav-label { font-size: 10.5px; color: #5B5648; }
+    .lockups { display: flex; flex-direction: column; gap: 10px; }
+    .lockup { display: flex; align-items: center; gap: 14px; padding: 16px 18px; border-radius: 4px; }
+    .lockup.light { background: #EDE7D9; border: 1px solid #D8D0BC; }
+    .lockup.dark { background: #12232B; }
+    .lockup .icon { width: 32px; height: 38px; flex-shrink: 0; }
+    .lockup .word { display: flex; flex-direction: column; gap: 2px; }
+    .lockup .brand { font-family: 'Fraunces', serif; font-size: 19px; font-weight: 600; line-height: 1; }
+    .lockup.light .brand { color: #1A1A17; }
+    .lockup.dark .brand { color: #EDE7D9; }
+    .lockup .tag { font-size: 10.5px; }
+    .lockup.light .tag { color: #5B5648; }
+    .lockup.dark .tag { color: #A9BBC0; }
+  </style>
+</helmet>
+<div class="board">
+  <div>
+    <div class="kicker">Opción 4 — Costa Este</div>
+    <h1 class="title">El litoral atlántico, dibujado como un pulso</h1>
+    <p class="rationale">Una silueta muy abstraída del borde este de Argentina (nada de mapa detallado ni textura) donde el trazo de la costa ES literalmente la línea de un electrocardiograma. La interpretación más literal del brief: el pulso es el borde del país.</p>
+  </div>
+  <div class="hero">
+    <svg class="icon" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+      <polygon points="58,8 38,22 62,36 40,52 60,66 44,80 50,95 95,95 95,8" fill="#1A1A17"/>
+    </svg>
+  </div>
+  <div>
+    <div class="section-label">Favicon simulado</div>
+    <div class="favicon-row">
+      <div class="fav-swatch">
+        <div class="fav-box" style="width: 32px; height: 32px; padding: 4px;">
+          <svg width="100%" height="100%" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <polygon points="58,8 38,22 62,36 40,52 60,66 44,80 50,95 95,95 95,8" fill="#1A1A17"/>
+          </svg>
+        </div>
+        <span class="fav-label">32px</span>
+      </div>
+      <div class="fav-swatch">
+        <div class="fav-box" style="width: 16px; height: 16px; padding: 1px;">
+          <svg width="100%" height="100%" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <polygon points="58,8 38,22 62,36 40,52 60,66 44,80 50,95 95,95 95,8" fill="#1A1A17"/>
+          </svg>
+        </div>
+        <span class="fav-label">16px</span>
+      </div>
+    </div>
+  </div>
+  <div class="lockups">
+    <div class="section-label">Lockup completo</div>
+    <div class="lockup light">
+      <svg class="icon" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+        <polygon points="58,8 38,22 62,36 40,52 60,66 44,80 50,95 95,95 95,8" fill="#1A1A17"/>
+      </svg>
+      <div class="word">
+        <span class="brand">Pulso Austral</span>
+        <span class="tag">El estado del país, medido.</span>
+      </div>
+    </div>
+    <div class="lockup dark">
+      <svg class="icon" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+        <polygon points="58,8 38,22 62,36 40,52 60,66 44,80 50,95 95,95 95,8" fill="#EDE7D9"/>
+      </svg>
+      <div class="word">
+        <span class="brand">Pulso Austral</span>
+        <span class="tag">El estado del país, medido.</span>
+      </div>
+    </div>
+  </div>
+</div>
+</x-dc>
+</body>
+</html>

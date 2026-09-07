@@ -1,0 +1,32 @@
+# Blueprint de Render para el backend de Pulso Austral.
+# En Render: New → Blueprint → conectar este repo → Render lee este archivo solo.
+# El frontend (Next.js) NO va acá — se despliega aparte en Vercel.
+services:
+  - type: web
+    name: pulso-austral-api
+    runtime: python
+    plan: free
+    rootDir: backend
+    buildCommand: "pip install -r requirements.txt && python manage.py collectstatic --noinput && python manage.py migrate"
+    startCommand: "gunicorn config.wsgi:application --bind 0.0.0.0:$PORT"
+    envVars:
+      # Se genera sola la primera vez que se crea el servicio — no hace falta tocarla.
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DEBUG
+        value: "False"
+      # El resto se completa a mano en el dashboard de Render la primera vez
+      # (Environment → Add Environment Variable) — son datos propios del
+      # proyecto, no algo que Render pueda adivinar:
+      #   ALLOWED_HOSTS          -> pulso-austral-api.onrender.com,api.pulsoaustral.com.ar
+      #   DATABASE_URL           -> el connection string de Neon (el mismo del .env local)
+      #   CORS_ALLOWED_ORIGINS   -> https://pulsoaustral.com.ar,https://www.pulsoaustral.com.ar
+      #   CSRF_TRUSTED_ORIGINS   -> https://pulso-austral-api.onrender.com,https://api.pulsoaustral.com.ar
+      - key: ALLOWED_HOSTS
+        sync: false
+      - key: DATABASE_URL
+        sync: false
+      - key: CORS_ALLOWED_ORIGINS
+        sync: false
+      - key: CSRF_TRUSTED_ORIGINS
+        sync: false

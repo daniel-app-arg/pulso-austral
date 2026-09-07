@@ -1,0 +1,127 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+  <style>
+    body { margin: 0; }
+    .board { width: 100%; height: 100%; background: #EDE7D9; font-family: 'IBM Plex Sans', sans-serif; color: #1A1A17; box-sizing: border-box; padding: 40px 48px; display: flex; flex-direction: column; gap: 26px; }
+    .kicker { font-size: 12px; letter-spacing: .05em; text-transform: uppercase; color: #5B5648; }
+    .title { font-family: 'Fraunces', serif; font-size: 28px; font-weight: 600; margin: 4px 0 0 0; }
+    .subtitle { font-size: 14px; color: #5B5648; max-width: 640px; line-height: 1.5; }
+    .row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 24px; }
+    .panel { background: white; border: 1px solid #D8D0BC; border-radius: 4px; padding: 22px; }
+    .section-label { font-size: 11px; text-transform: uppercase; letter-spacing: .05em; color: #5B5648; margin-bottom: 14px; }
+    .hero { display: flex; align-items: center; justify-content: center; padding: 8px 0 4px 0; }
+    .hero .icon { width: 140px; height: 140px; }
+    .favicon-row { display: flex; gap: 18px; align-items: flex-end; justify-content: center; margin-top: 10px; }
+    .fav-swatch { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+    .fav-box { background: #F7F4EC; border: 1px solid #D8D0BC; border-radius: 6px; display: flex; align-items: center; justify-content: center; }
+    .fav-label { font-size: 10.5px; color: #5B5648; }
+    .lockups { display: flex; flex-direction: column; gap: 10px; }
+    .lockup { display: flex; align-items: center; gap: 14px; padding: 18px 20px; border-radius: 4px; }
+    .lockup.light { background: #EDE7D9; border: 1px solid #D8D0BC; }
+    .lockup.dark { background: #12232B; }
+    .lockup .icon { width: 40px; height: 40px; flex-shrink: 0; }
+    .lockup .word { display: flex; flex-direction: column; gap: 2px; }
+    .lockup .brand { font-family: 'Fraunces', serif; font-size: 20px; font-weight: 600; line-height: 1; }
+    .lockup.light .brand { color: #1A1A17; }
+    .lockup.dark .brand { color: #EDE7D9; }
+    .lockup .tag { font-size: 11px; }
+    .lockup.light .tag { color: #5B5648; }
+    .lockup.dark .tag { color: #A9BBC0; }
+    .rules { font-size: 12.5px; color: #5B5648; line-height: 1.7; margin: 0; padding-left: 18px; }
+    .rules li { margin-bottom: 6px; }
+    .files { font-size: 12px; color: #5B5648; line-height: 1.8; }
+    .files code { background: #F7F4EC; border: 1px solid #D8D0BC; border-radius: 3px; padding: 1px 5px; font-size: 11.5px; }
+  </style>
+</helmet>
+<div class="board">
+  <div>
+    <div class="kicker">Pulso Austral — identidad, versión final</div>
+    <h1 class="title">El Sol de Mayo, atravesado por un pulso</h1>
+    <p class="subtitle">
+      Dirección elegida entre seis opciones exploradas — ver "Otras direcciones" en la página de al
+      lado. Ya está implementada en el sitio: favicon, apple-touch-icon y el logo junto al título en
+      todas las páginas.
+    </p>
+  </div>
+  <div class="row">
+    <div class="panel">
+      <div class="section-label">Isotipo</div>
+      <div class="hero">
+        <svg class="icon" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="50" cy="50" r="30" fill="#C98A2C"/>
+          <polyline points="20,50 32,50 38,50 43,32 49,68 55,20 61,58 67,50 80,50" fill="none" stroke="#EDE7D9" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <div class="favicon-row">
+        <div class="fav-swatch">
+          <div class="fav-box" style="width: 32px; height: 32px; padding: 5px;">
+            <svg width="100%" height="100%" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="50" cy="50" r="30" fill="#C98A2C"/>
+              <polyline points="20,50 32,50 38,50 43,32 49,68 55,20 61,58 67,50 80,50" fill="none" stroke="#EDE7D9" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <span class="fav-label">32px</span>
+        </div>
+        <div class="fav-swatch">
+          <div class="fav-box" style="width: 16px; height: 16px; padding: 2px;">
+            <svg width="100%" height="100%" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="50" cy="50" r="30" fill="#C98A2C"/>
+              <polyline points="20,50 32,50 38,50 43,32 49,68 55,20 61,58 67,50 80,50" fill="none" stroke="#EDE7D9" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <span class="fav-label">16px</span>
+        </div>
+      </div>
+    </div>
+    <div class="panel lockups">
+      <div class="section-label">Lockup completo</div>
+      <div class="lockup light">
+        <svg class="icon" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="50" cy="50" r="30" fill="#C98A2C"/>
+          <polyline points="20,50 32,50 38,50 43,32 49,68 55,20 61,58 67,50 80,50" fill="none" stroke="#EDE7D9" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <div class="word">
+          <span class="brand">Pulso Austral</span>
+          <span class="tag">El estado del país, medido.</span>
+        </div>
+      </div>
+      <div class="lockup dark">
+        <svg class="icon" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="50" cy="50" r="30" fill="#C98A2C"/>
+          <polyline points="20,50 32,50 38,50 43,32 49,68 55,20 61,58 67,50 80,50" fill="none" stroke="#EDE7D9" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <div class="word">
+          <span class="brand">Pulso Austral</span>
+          <span class="tag">El estado del país, medido.</span>
+        </div>
+      </div>
+      <div class="section-label" style="margin-top: 6px;">Uso</div>
+      <ul class="rules">
+        <li>El disco es opaco: funciona igual sobre fondo claro u oscuro, sin variantes de color.</li>
+        <li>No estirar ni recortar el círculo — el pulso siempre centrado.</li>
+        <li>Dejar un margen de aire alrededor de al menos medio radio del círculo.</li>
+        <li>A 16px (favicon) se pierde el detalle fino del pulso pero el disco ochre sigue siendo reconocible — por eso funciona como isotipo solo.</li>
+      </ul>
+    </div>
+    <div class="panel">
+      <div class="section-label">Ya implementado en el sitio</div>
+      <div class="files">
+        <div><code>frontend/src/app/icon.svg</code> — favicon (todos los navegadores modernos)</div>
+        <div style="margin-top:6px;"><code>frontend/src/app/apple-icon.png</code> — ícono iOS (180×180)</div>
+        <div style="margin-top:6px;"><code>frontend/src/components/LogoMark.tsx</code> — el isotipo junto al título, en todas las páginas</div>
+        <div style="margin-top:6px;"><code>branding/logo/pulso-austral-mark.svg</code> — el archivo maestro, fuente de los anteriores</div>
+      </div>
+    </div>
+  </div>
+</div>
+</x-dc>
+</body>
+</html>

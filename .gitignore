@@ -1,0 +1,5 @@
+# Cruft de SO/editor a nivel raíz. backend/ y frontend/ tienen sus propios
+# .gitignore para venv, node_modules, .env, etc.
+.DS_Store
+Thumbs.db
+.claude/

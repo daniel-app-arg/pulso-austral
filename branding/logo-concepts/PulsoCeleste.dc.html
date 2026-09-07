@@ -1,0 +1,136 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+  <style>
+    body { margin: 0; }
+    .board { width: 100%; height: 100%; background: #EDE7D9; font-family: 'IBM Plex Sans', sans-serif; color: #1A1A17; box-sizing: border-box; padding: 32px; display: flex; flex-direction: column; gap: 22px; }
+    .kicker { font-size: 12px; letter-spacing: .04em; text-transform: uppercase; color: #5B5648; }
+    .title { font-family: 'Fraunces', serif; font-size: 22px; font-weight: 600; margin: 4px 0 0 0; line-height: 1.25; }
+    .rationale { font-size: 13px; color: #5B5648; line-height: 1.5; }
+    .hero { display: flex; align-items: center; justify-content: center; padding: 12px 0; }
+    .hero .icon { width: 160px; height: 160px; }
+    .section-label { font-size: 11px; text-transform: uppercase; letter-spacing: .05em; color: #5B5648; margin-bottom: 10px; }
+    .favicon-row { display: flex; gap: 18px; align-items: flex-end; }
+    .fav-swatch { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+    .fav-box { background: white; border: 1px solid #D8D0BC; border-radius: 6px; display: flex; align-items: center; justify-content: center; box-shadow: 0 1px 3px rgba(0,0,0,.08); }
+    .fav-label { font-size: 10.5px; color: #5B5648; }
+    .lockups { display: flex; flex-direction: column; gap: 10px; }
+    .lockup { display: flex; align-items: center; gap: 14px; padding: 16px 18px; border-radius: 4px; }
+    .lockup.light { background: #EDE7D9; border: 1px solid #D8D0BC; }
+    .lockup.dark { background: #12232B; }
+    .lockup .icon { width: 38px; height: 38px; flex-shrink: 0; }
+    .lockup .word { display: flex; flex-direction: column; gap: 2px; }
+    .lockup .brand { font-family: 'Fraunces', serif; font-size: 19px; font-weight: 600; line-height: 1; }
+    .lockup.light .brand { color: #1A1A17; }
+    .lockup.dark .brand { color: #EDE7D9; }
+    .lockup .tag { font-size: 10.5px; }
+    .lockup.light .tag { color: #5B5648; }
+    .lockup.dark .tag { color: #A9BBC0; }
+    .note { font-size: 11.5px; color: #A23B2E; background: rgba(162,59,46,.08); border: 1px solid rgba(162,59,46,.25); border-radius: 4px; padding: 10px 12px; line-height: 1.5; }
+  </style>
+</helmet>
+<div class="board">
+  <div>
+    <div class="kicker">Opción 6 — Pulso Celeste</div>
+    <h1 class="title">Una escarapela con el pulso adentro</h1>
+    <p class="rationale">Celeste y blanco de la bandera, en forma de escarapela (el emblema patrio circular, no la bandera plana) — la manera más directa de decir "Argentina" sin gauchos ni mate. El pulso cruza las tres franjas como el latido del país.</p>
+  </div>
+  <div class="hero">
+    <svg class="icon" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+      <defs><clipPath id="badge-hero"><circle cx="50" cy="50" r="32"/></clipPath></defs>
+      <g clip-path="url(#badge-hero)">
+        <rect x="18" y="18" width="64" height="21.4" fill="#75AADB"/>
+        <rect x="18" y="39.3" width="64" height="21.4" fill="#EDE7D9"/>
+        <rect x="18" y="60.6" width="64" height="21.4" fill="#75AADB"/>
+        <polyline points="18,50 30,50 36,50 41,32 47,68 53,20 59,62 65,50 82,50" fill="none" stroke="#1A1A17" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+      </g>
+      <circle cx="50" cy="50" r="32" fill="none" stroke="#1A1A17" stroke-width="2"/>
+    </svg>
+  </div>
+  <div>
+    <div class="section-label">Favicon simulado</div>
+    <div class="favicon-row">
+      <div class="fav-swatch">
+        <div class="fav-box" style="width: 32px; height: 32px; padding: 3px;">
+          <svg width="100%" height="100%" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <defs><clipPath id="badge-fav32"><circle cx="50" cy="50" r="32"/></clipPath></defs>
+            <g clip-path="url(#badge-fav32)">
+              <rect x="18" y="18" width="64" height="21.4" fill="#75AADB"/>
+              <rect x="18" y="39.3" width="64" height="21.4" fill="#EDE7D9"/>
+              <rect x="18" y="60.6" width="64" height="21.4" fill="#75AADB"/>
+              <polyline points="18,50 30,50 36,50 41,32 47,68 53,20 59,62 65,50 82,50" fill="none" stroke="#1A1A17" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+            </g>
+            <circle cx="50" cy="50" r="32" fill="none" stroke="#1A1A17" stroke-width="2"/>
+          </svg>
+        </div>
+        <span class="fav-label">32px</span>
+      </div>
+      <div class="fav-swatch">
+        <div class="fav-box" style="width: 16px; height: 16px; padding: 1px;">
+          <svg width="100%" height="100%" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <defs><clipPath id="badge-fav16"><circle cx="50" cy="50" r="32"/></clipPath></defs>
+            <g clip-path="url(#badge-fav16)">
+              <rect x="18" y="18" width="64" height="21.4" fill="#75AADB"/>
+              <rect x="18" y="39.3" width="64" height="21.4" fill="#EDE7D9"/>
+              <rect x="18" y="60.6" width="64" height="21.4" fill="#75AADB"/>
+              <polyline points="18,50 30,50 36,50 41,32 47,68 53,20 59,62 65,50 82,50" fill="none" stroke="#1A1A17" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+            </g>
+            <circle cx="50" cy="50" r="32" fill="none" stroke="#1A1A17" stroke-width="2"/>
+          </svg>
+        </div>
+        <span class="fav-label">16px</span>
+      </div>
+    </div>
+  </div>
+  <div class="lockups">
+    <div class="section-label">Lockup completo</div>
+    <div class="lockup light">
+      <svg class="icon" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+        <defs><clipPath id="badge-light"><circle cx="50" cy="50" r="32"/></clipPath></defs>
+        <g clip-path="url(#badge-light)">
+          <rect x="18" y="18" width="64" height="21.4" fill="#75AADB"/>
+          <rect x="18" y="39.3" width="64" height="21.4" fill="#EDE7D9"/>
+          <rect x="18" y="60.6" width="64" height="21.4" fill="#75AADB"/>
+          <polyline points="18,50 30,50 36,50 41,32 47,68 53,20 59,62 65,50 82,50" fill="none" stroke="#1A1A17" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+        </g>
+        <circle cx="50" cy="50" r="32" fill="none" stroke="#1A1A17" stroke-width="2"/>
+      </svg>
+      <div class="word">
+        <span class="brand">Pulso Austral</span>
+        <span class="tag">El estado del país, medido.</span>
+      </div>
+    </div>
+    <div class="lockup dark">
+      <svg class="icon" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+        <defs><clipPath id="badge-dark"><circle cx="50" cy="50" r="32"/></clipPath></defs>
+        <g clip-path="url(#badge-dark)">
+          <rect x="18" y="18" width="64" height="21.4" fill="#75AADB"/>
+          <rect x="18" y="39.3" width="64" height="21.4" fill="#EDE7D9"/>
+          <rect x="18" y="60.6" width="64" height="21.4" fill="#75AADB"/>
+          <polyline points="18,50 30,50 36,50 41,32 47,68 53,20 59,62 65,50 82,50" fill="none" stroke="#1A1A17" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+        </g>
+        <circle cx="50" cy="50" r="32" fill="none" stroke="#EDE7D9" stroke-width="2"/>
+      </svg>
+      <div class="word">
+        <span class="brand">Pulso Austral</span>
+        <span class="tag">El estado del país, medido.</span>
+      </div>
+    </div>
+  </div>
+  <div class="note">
+    Ojo: es el único de los seis que sale de la paleta del sitio (papel/tinta/ochre/teal/ladrillo) —
+    usa el celeste de la bandera (#75AADB) como color propio del isotipo. Normal en un logo (no tiene
+    por qué calcar los colores de la UI), pero avisen si prefieren que el ícono se quede dentro de la
+    paleta ya definida.
+  </div>
+</div>
+</x-dc>
+</body>
+</html>
