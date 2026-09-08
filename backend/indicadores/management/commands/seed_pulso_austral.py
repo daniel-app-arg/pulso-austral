@@ -69,6 +69,7 @@ CATEGORIAS = [
     ("geo", "Geopolítica", "#A23B2E", "Globe2", 9),
     ("seguridad", "Seguridad", "#7A2E3B", "Shield", 10),
     ("desarrollo_militar", "Desarrollo militar", "#4B5320", "Swords", 11),
+    ("educacion", "Educación", "#2C5F7A", "GraduationCap", 12),
 ]
 
 FUENTES = [
@@ -91,6 +92,11 @@ FUENTES = [
     ("Ministerio de Defensa", "https://www.argentina.gob.ar/defensa"),
     ("SIPRI", "https://www.sipri.org/databases/milex"),
     ("Global Firepower", "https://www.globalfirepower.com/country-military-strength-detail.php?country_id=argentina"),
+    ("OCDE (PISA)", "https://www.oecd.org/pisa/"),
+    ("Argentinos por la Educación", "https://argentinosporlaeducacion.org/"),
+    ("OPSA-UBA", "https://www.psi.uba.ar/"),
+    ("El Cronista", "https://www.cronista.com/"),
+    ("Perfil", "https://www.perfil.com/"),
 ]
 
 # Indicadores que fetch_datos_reales.py reemplaza con datos reales de una
@@ -103,6 +109,25 @@ FUENTES = [
 # valores de IndicadorValor.
 INDICADORES_CON_DATOS_REALES = {
     'dolar_oficial', 'dolar_blue', 'reservas_bcra', 'inflacion_interanual', 'emae', 'desempleo',
+    'balanza_comercial', 'exportaciones',
+}
+
+# A pedido explícito de no mostrar ningún número que no salga de una
+# fuente real: este seed NO carga ningún IndicadorValor para los de
+# INDICADORES_CON_DATOS_REALES (eso es trabajo exclusivo de
+# fetch_datos_reales.py — sembrar acá un valor ilustrativo "de relleno"
+# para esos, aunque luego se pisara, causó un bug real: la serie
+# ilustrativa de inflación quedaba fechada el día 1 de cada mes y la real
+# el último día hábil, así que no coincidían en la clave única
+# (indicador+fecha+granularidad) y convivían las dos, haciendo zigzaguear
+# el gráfico entre ~130% y ~33% mes a mes). Solo se cargan estos dos, que
+# son un único punto verificado por búsqueda web (no una serie
+# automática, pero tampoco inventado — ver el comentario en su tupla en
+# INDICADORES). El resto de los 47 indicadores queda creado igual
+# (nombre, unidad, metodología, fuente) para que el glosario los siga
+# explicando, pero sin ninguna cifra hasta tener una fuente real.
+INDICADORES_CON_VALORES_REALES = {
+    'tasa_homicidios', 'ranking_poder_militar',
 }
 
 # Polaridad de cada indicador para el índice general (ver
@@ -157,7 +182,11 @@ POLARIDADES = {
     'exportaciones': 'positivo',
     # institucional
     'cpi_corrupcion': 'positivo',
-    'estado_derecho': 'positivo',
+    # El dato real disponible es la POSICIÓN en el ranking del WJP Rule of
+    # Law Index (63°, 65°...), no el puntaje 0-1 — ahí más bajo es mejor,
+    # al revés de lo que asumía el 'positivo' original (pensado para un
+    # puntaje). Mismo criterio que riesgo_pais/ranking_poder_militar.
+    'estado_derecho': 'negativo',
     # bienestar
     'esperanza_vida': 'positivo',
     'cobertura_salud': 'positivo',
@@ -171,6 +200,13 @@ POLARIDADES = {
     'tasa_homicidios': 'negativo',
     'delitos_propiedad': 'negativo',
     'percepcion_inseguridad': 'negativo',
+    # educacion
+    'resultados_pisa': 'positivo',
+    'tasa_escolarizacion': 'positivo',
+    'tasa_analfabetismo': 'negativo',
+    # 'gasto_educativo' queda neutral a propósito, mismo criterio que
+    # gasto_publico/gasto_defensa: cuánto se gasta es una discusión de
+    # política, no tiene una dirección "mejor" consensuada por sí sola.
 }
 
 # (id, categoria, nombre, tipo, unidad, destacado, fuente_nombre, orden,
@@ -320,10 +356,12 @@ INDICADORES = [
         None, "+2 puntos interanual", "up",
     ),
     (
-        "estado_derecho", "institucional", "Índice de estado de derecho", "numerico", "índice", False, "World Justice Project", 2,
-        [0.505, 0.506, 0.507, 0.508, 0.509, 0.510, 0.511, 0.512, 0.513, 0.514, 0.515, 0.516, 0.518, 0.520],
-        [0.52, 0.51, 0.50, 0.49, 0.48, 0.49, 0.50, 0.50, 0.51, 0.52],
-        None, "+0.005 interanual", "up",
+        # El dato real disponible es la POSICIÓN en el ranking (no el
+        # puntaje 0-1 que tenía el viejo valor ilustrativo) — de ahí el
+        # cambio de nombre y unidad para que no lean "0,52" como un
+        # porcentaje o índice normalizado.
+        "estado_derecho", "institucional", "Ranking de estado de derecho (WJP)", "numerico", "posición", False, "World Justice Project", 2,
+        None, None, None, "", "flat",
     ),
     (
         "gasto_publico", "institucional", "Gasto público consolidado", "numerico", "% PBI", False, "Ministerio de Economía", 3,
@@ -376,23 +414,23 @@ INDICADORES = [
         None, "-0.5pp en el mes", "down",
     ),
     (
-        "humor_social", "percepcion", "Índice de humor social", "numerico", "puntos", False, "Management & Fit", 3,
-        [47.5, 47.8, 48.1, 48.4, 48.7, 49.0, 49.3, 49.6, 49.8, 50.0, 50.3, 50.6, 50.8, 51.0],
-        [52, 45, 38, 35, 40, 37, 33, 42, 48, 51],
-        None, "+0.2pt en el mes", "up",
+        "humor_social", "percepcion", "Optimismo económico (humor social)", "numerico", "% optimista", False, "El Cronista", 3,
+        None, None, None, "", "flat",
     ),
     (
-        "aprobacion_gobierno", "percepcion", "Aprobación de gestión de gobierno", "numerico", "%", False, "Management & Fit", 4,
-        [46.5, 46.2, 45.9, 45.6, 45.3, 45.0, 44.7, 44.4, 44.1, 43.8, 43.5, 43.3, 43.1, 43.0],
-        [55, 40, 33, 55, 38, 32, 28, 48, 45, 43],
-        None, "-0.5pp en el mes", "down",
+        "aprobacion_gobierno", "percepcion", "Aprobación de gestión de gobierno", "numerico", "%", False, "Perfil", 4,
+        None, None, None, "", "flat",
     ),
     # -- seguridad -----------------------------------------------------------
     (
+        # Único punto real (no serie): Estadísticas Criminales 2025 del
+        # Ministerio de Seguridad (SNIC), verificado por búsqueda web —
+        # bajó de 4,4 en 2023 a 3,6 en 2025, la tasa más baja registrada
+        # (ver noticia de seguridad en seed_noticias_reales.py). Sin serie
+        # histórica fabricada alrededor: no hay una fuente automática para
+        # esto, así que no se inventa una tendencia mes a mes.
         "tasa_homicidios", "seguridad", "Tasa de homicidios", "numerico", "cada 100k hab.", False, "Ministerio de Seguridad", 1,
-        [5.3, 5.3, 5.2, 5.2, 5.1, 5.1, 5.0, 5.0, 4.9, 4.9, 4.8, 4.8, 4.7, 4.7],
-        [5.9, 5.7, 5.6, 4.6, 5.0, 5.1, 5.4, 5.2, 5.0, 4.7],
-        None, "-0.1 cada 100k interanual", "down",
+        None, None, 3.6, "-0.8 vs. 2023 (SNIC, año 2025)", "down",
     ),
     (
         "delitos_propiedad", "seguridad", "Delitos contra la propiedad", "numerico", "%", False, "Ministerio de Seguridad", 2,
@@ -407,10 +445,8 @@ INDICADORES = [
         None, "+0.2 cada 100k en el mes", "up",
     ),
     (
-        "percepcion_inseguridad", "seguridad", "Percepción de inseguridad", "numerico", "puntos", False, "Observatorio de la Deuda Social Argentina (UCA)", 4,
-        [68, 67, 67, 66, 66, 65, 65, 64, 64, 63, 63, 62, 62, 61],
-        [72, 74, 77, 68, 73, 76, 80, 78, 73, 61],
-        None, "-0.5pt en el mes", "down",
+        "percepcion_inseguridad", "seguridad", "Percepción de inseguridad", "numerico", "puntos (0-10)", False, "OPSA-UBA", 4,
+        None, None, None, "", "flat",
     ),
     # -- desarrollo_militar ----------------------------------------------------
     (
@@ -432,10 +468,32 @@ INDICADORES = [
         None, "+0.2pp en el mes", "up",
     ),
     (
+        # Único punto real (no serie): ranking 2026 publicado por Global
+        # Firepower, verificado por búsqueda web — Argentina en la
+        # posición 32 de 145 países. Sin serie histórica fabricada: GFP
+        # publica una vez por año, no hay granularidad mensual real.
         "ranking_poder_militar", "desarrollo_militar", "Ranking de poder militar (Global Firepower)", "numerico", "posición", False, "Global Firepower", 4,
-        [34, 34, 33, 33, 33, 32, 32, 32, 31, 31, 31, 30, 30, 30],
-        [38, 37, 36, 35, 34, 33, 33, 32, 31, 30],
-        None, "-1 posición interanual", "down",
+        None, None, 32, "32 de 145 países (Global Firepower 2026)", "flat",
+    ),
+    # -- educacion -------------------------------------------------------
+    # Categoría nueva — sin datos ilustrativos de relleno (mismo criterio
+    # que el resto desde la limpieza): los números viven en
+    # seed_indicadores_reales.py, verificados por búsqueda web.
+    (
+        "resultados_pisa", "educacion", "Resultados PISA (matemática)", "numerico", "puntos", False, "OCDE (PISA)", 1,
+        None, None, None, "", "flat",
+    ),
+    (
+        "gasto_educativo", "educacion", "Gasto educativo nacional", "numerico", "% PBI", False, "Argentinos por la Educación", 2,
+        None, None, None, "", "flat",
+    ),
+    (
+        "tasa_escolarizacion", "educacion", "Tasa de escolarización (4 a 17 años)", "numerico", "%", False, "INDEC", 3,
+        None, None, None, "", "flat",
+    ),
+    (
+        "tasa_analfabetismo", "educacion", "Tasa de analfabetismo", "numerico", "%", False, "INDEC", 4,
+        None, None, None, "", "flat",
     ),
     (
         "acuerdo_fmi", "geo", "Acuerdo con el FMI", "cualitativo", "", False, "FMI", 1,
@@ -455,41 +513,20 @@ INDICADORES = [
     ),
 ]
 
-NOTICIAS = [
-    ("macro", "Economía", date(2026, 9, 7), "La brecha cambiaria se achica por tercera semana consecutiva",
-     "El spread entre el dólar oficial y el blue cayó a su nivel más bajo en ocho meses, impulsado por la mayor oferta de divisas del agro."),
-    ("macro", "Economía", date(2026, 9, 4), "El Banco Central acumuló reservas por cuarta semana al hilo",
-     "Las compras se explican por la liquidación del agro y una mayor demanda de pesos estacional."),
-    ("empleo", "Trabajo", date(2026, 9, 6), "El salario real mostró la primera mejora mensual del año",
-     "Paritarias por encima de la inflación en tres sectores clave frenaron, por ahora, la caída del poder adquisitivo."),
-    ("empleo", "Trabajo", date(2026, 9, 2), "Crece el empleo registrado en la construcción",
-     "Es el tercer mes de recuperación tras la fuerte caída del año pasado, según datos del Ministerio de Trabajo."),
-    ("geo", "Geopolítica", date(2026, 9, 6), "El Gobierno negocia un nuevo tramo de desembolsos con el FMI",
-     "La misión del organismo llega a Buenos Aires la semana próxima para revisar el cumplimiento de las metas fiscales del segundo semestre."),
-    ("geo", "Geopolítica", date(2026, 9, 3), "Avanza la ratificación del acuerdo Mercosur–Unión Europea",
-     "Cancillería espera que el tratado esté listo para su firma definitiva antes de fin de año."),
-]
+# Vacío a propósito, mismo motivo que TIMELINE: eran 6 noticias inventadas
+# sin medio ni link real (idénticas al MOCK_NOTICIAS del frontend), solo
+# para probar el diseño de las tarjetas de noticias. Las noticias reales
+# viven en `seed_noticias_reales.py` (verificadas por búsqueda web, con
+# medio y url reales).
+NOTICIAS = []
 
-TIMELINE = [
-    (date(2026, 9, 7), "Brecha cambiaria en su mínimo de 8 meses", "positivo", "macro"),
-    (date(2026, 9, 6), "Salario real mejora por primera vez en el año", "positivo", "empleo"),
-    (date(2026, 9, 6), "Misión del FMI llega para revisar metas fiscales", "neutral", "geo"),
-    (date(2026, 9, 4), "BCRA acumula reservas por cuarta semana consecutiva", "positivo", "macro"),
-    (date(2026, 9, 3), "Avanza la ratificación del acuerdo Mercosur–UE", "positivo", "geo"),
-    (date(2026, 9, 2), "Sube el empleo registrado en la construcción", "positivo", "empleo"),
-    (date(2026, 8, 29), "Suba en la tasa de desempleo del segundo trimestre", "negativo", "empleo"),
-    (date(2026, 8, 27), "S&P sube la perspectiva de la calificación soberana", "positivo", "geo"),
-    (date(2026, 8, 22), "El dólar blue subió tres ruedas seguidas", "negativo", "macro"),
-    (date(2026, 8, 18), "Cae la producción industrial por segundo mes", "negativo", "macro"),
-    (date(2026, 8, 14), "Tensión comercial por trabas para importar insumos", "negativo", "geo"),
-    (date(2026, 8, 9), "Se recupera el poder de compra del salario mínimo", "positivo", "empleo"),
-    (date(2026, 8, 5), "El Merval marcó un nuevo máximo en pesos", "positivo", "macro"),
-    (date(2026, 7, 30), "El Gobierno cerró el acuerdo técnico con el FMI", "positivo", "geo"),
-    (date(2026, 7, 24), "Aumentó la informalidad laboral en el segundo trimestre", "negativo", "empleo"),
-    (date(2026, 7, 19), "Moody's mantuvo la calificación soberana sin cambios", "neutral", "geo"),
-    (date(2026, 7, 11), "La inflación núcleo volvió a acelerarse", "negativo", "macro"),
-    (date(2026, 7, 3), "Se creó empleo privado por primera vez en el año", "positivo", "empleo"),
-]
+# Vacío a propósito: la lista original tenía 18 titulares inventados para
+# probar el diseño de la línea de tiempo (idéntica al MOCK_TIMELINE del
+# frontend) — no eran hechos verificados, así que se sacaron a pedido
+# explícito de limpiar todo dato que no salga de una fuente real. La
+# "Línea de tiempo" del dashboard queda vacía hasta que se cargue acá un
+# evento real, sourceado como los de `seed_noticias_reales.py`.
+TIMELINE = []
 
 
 class Command(BaseCommand):
@@ -549,30 +586,36 @@ class Command(BaseCommand):
                 },
             )
 
-            if mensuales is not None:
-                for fecha, valor in zip(PERIODOS_14M, mensuales):
-                    es_ultimo = fecha == PERIODOS_14M[-1]
+            # Solo se cargan cifras para los indicadores con una fuente real
+            # detrás (ver INDICADORES_CON_VALORES_REALES) — el resto queda
+            # con su metodología documentada pero sin ningún IndicadorValor,
+            # en vez de rellenar con series inventadas para que "se vea
+            # completo".
+            if ind_id in INDICADORES_CON_VALORES_REALES:
+                if mensuales is not None:
+                    for fecha, valor in zip(PERIODOS_14M, mensuales):
+                        es_ultimo = fecha == PERIODOS_14M[-1]
+                        valores_a_guardar.append(IndicadorValor(
+                            indicador=indicador, fecha=fecha, granularidad="mes",
+                            valor_numerico=valor,
+                            delta_texto=delta_texto if es_ultimo else "",
+                            trend=trend if es_ultimo else "flat",
+                        ))
+                if anuales is not None:
+                    for fecha, valor in zip(ANIOS_10, anuales):
+                        valores_a_guardar.append(IndicadorValor(
+                            indicador=indicador, fecha=fecha, granularidad="anio", valor_numerico=valor,
+                        ))
+                if valor_actual is not None:
+                    # Indicadores sin serie histórica (destacados del header, o
+                    # cualitativos): un único punto "actual".
+                    es_texto = isinstance(valor_actual, str)
                     valores_a_guardar.append(IndicadorValor(
-                        indicador=indicador, fecha=fecha, granularidad="mes",
-                        valor_numerico=valor,
-                        delta_texto=delta_texto if es_ultimo else "",
-                        trend=trend if es_ultimo else "flat",
+                        indicador=indicador, fecha=date(2026, 9, 7), granularidad="dia",
+                        valor_numerico=None if es_texto else valor_actual,
+                        valor_texto=valor_actual if es_texto else "",
+                        delta_texto=delta_texto, trend=trend,
                     ))
-            if anuales is not None:
-                for fecha, valor in zip(ANIOS_10, anuales):
-                    valores_a_guardar.append(IndicadorValor(
-                        indicador=indicador, fecha=fecha, granularidad="anio", valor_numerico=valor,
-                    ))
-            if valor_actual is not None:
-                # Indicadores sin serie histórica (destacados del header, o
-                # cualitativos): un único punto "actual".
-                es_texto = isinstance(valor_actual, str)
-                valores_a_guardar.append(IndicadorValor(
-                    indicador=indicador, fecha=date(2026, 9, 7), granularidad="dia",
-                    valor_numerico=None if es_texto else valor_actual,
-                    valor_texto=valor_actual if es_texto else "",
-                    delta_texto=delta_texto, trend=trend,
-                ))
 
         IndicadorValor.objects.bulk_create(
             valores_a_guardar,

@@ -10,7 +10,7 @@ inventados), desde el inicio del gobierno de Milei (10 de diciembre de
   (seed_editorial.py) — puede quedar rota con el tiempo, pero titulo/bajada
   no dependen de que siga viva.
 
-Es un punto de partida curado (19 hechos, uno por categoría como mínimo),
+Es un punto de partida curado (26 hechos, uno por categoría como mínimo),
 no un archivo exhaustivo de 3 años de noticias — mismo criterio que ya se
 usó para `eventos_timeline` (18 eventos) en seed_pulso_austral.py.
 Ampliarlo es agregar tuplas a NOTICIAS_REALES, no rediseñar nada.
@@ -174,6 +174,61 @@ NOTICIAS_REALES = [
         "no contaba con cazas supersónicos desde el retiro de los Mirage III en 2015; el "
         "contrato rondó los US$300 millones.",
         "https://cnnespanol.cnn.com/2024/04/16/argentina-compra-aviones-f-16-dinamarca-orix",
+    ),
+    (
+        "seguridad", "infobae", date(2026, 1, 22), "Seguridad",
+        "Argentina registró en 2025 la menor tasa de homicidios de su historia",
+        "El Ministerio de Seguridad presentó las Estadísticas Criminales 2025: la tasa cayó "
+        "a 3,6 cada 100.000 habitantes (desde 4,4 en 2023) y los robos bajaron 20,8% en el "
+        "año, según el Sistema Nacional de Información Criminal.",
+        "https://www.infobae.com/politica/2026/01/22/el-ministerio-de-seguridad-anuncio-la-tasa-de-homicidios-mas-baja-de-los-ultimos-anos-y-destaco-que-los-robos-disminuyeron-un-208-en-2025/",
+    ),
+    (
+        "desarrollo_militar", "el-cronista", date(2026, 9, 7), "Defensa",
+        "Vuelve la inscripción al Servicio Militar Voluntario con un rango de edad ampliado",
+        "El Ejército confirmó que durante septiembre los jóvenes solteros de entre 18 y 28 "
+        "años —antes el tope era 24— pueden anotarse para incorporarse a las Fuerzas "
+        "Armadas; sigue siendo voluntario, no obligatorio.",
+        "https://www.cronista.com/informacion-gral/confirmado-por-el-ejercito-de-argentina-en-septiembre-vuelve-el-servicio-militar-y-los-jovenes-de-entre-18-y-28-anos-deben-integrar-las-fuerzas-armadas-si-se-encuentran-solteros/",
+    ),
+    (
+        "sector_externo", "perfil", date(2026, 2, 19), "Sector externo",
+        "La balanza comercial arrancó 2026 con un superávit de US$1.987 millones",
+        "El INDEC informó exportaciones por US$7.057 millones e importaciones por "
+        "US$5.070 millones en enero, con un récord de ventas externas para ese mes.",
+        "https://www.perfil.com/noticias/economia/la-balanza-comercial-comenzo-2026-con-un-superavit-de-1987-millones-a40.phtml",
+    ),
+    (
+        "educacion", "la-nacion", date(2023, 12, 5), "Educación",
+        "Los resultados de PISA confirman una crisis de aprendizajes básicos en Argentina",
+        "7 de cada 10 estudiantes no alcanzó el nivel básico en Matemática y la mitad no llegó "
+        "al mínimo en Lectura, según la prueba internacional de la OCDE tomada a alumnos de "
+        "15 años en 2022.",
+        "https://www.lanacion.com.ar/sociedad/pruebas-pisa-la-crisis-de-los-aprendizajes-basicos-a-contrapelo-de-todos-los-discursos-de-inclusion-nid05122023/",
+    ),
+    (
+        "educacion", "perfil", date(2024, 10, 3), "Educación",
+        "Milei vetó la Ley de Financiamiento Universitario y el Congreso no logró revertirlo",
+        "La norma preveía actualizar por inflación el presupuesto de las universidades "
+        "nacionales y los salarios docentes; la oposición no reunió los dos tercios "
+        "necesarios en Diputados para insistir con la ley.",
+        "https://www.perfil.com/noticias/politica/las-universidades-cierran-el-primer-ano-de-javier-milei-con-un-30-menos-de-presupuesto.phtml",
+    ),
+    (
+        "produccion", "infobae", date(2024, 12, 31), "Producción",
+        "La liquidación de divisas del agro fue récord en 2024 y superó los US$25.000 millones",
+        "Fue el tercer mejor año de la historia para el ingreso de dólares del campo, "
+        "impulsado por una cosecha superior a la de 2023 pese a la caída de precios "
+        "internacionales de los granos.",
+        "https://www.infobae.com/economia/2024/12/31/la-liquidacion-de-divisas-del-agro-fue-record-en-2024-y-supero-los-usd-25000-millones/",
+    ),
+    (
+        "bienestar", "infobae", date(2024, 12, 2), "Salud",
+        "El PAMI restringió el acceso a medicamentos gratis para los jubilados",
+        "La obra social de los jubilados dejó de cubrir al 100% unos 170 medicamentos; "
+        "para mantener la gratuidad ahora se exigen topes de ingresos y patrimonio. Meses "
+        "después la Justicia de Mendoza frenó la medida por regresiva.",
+        "https://www.infobae.com/salud/2024/12/02/medicamentos-del-pami-cuales-son-los-cambios-en-la-cobertura-para-los-jubilados-y-pensionados/",
     ),
 ]
 

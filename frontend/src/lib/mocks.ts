@@ -42,6 +42,9 @@ interface IndicadorMock {
   valor: string;
   delta: string;
   trend: Trend;
+  /** Igual que Indicador.polaridad en el backend — determina si "trend: down"
+   * es una mejora o un empeoramiento a la hora de pintar la flecha. */
+  polaridad?: 'positivo' | 'negativo' | 'neutral';
   fuente?: { nombre: string; url: string };
   historias?: Historias | null;
 }
@@ -54,7 +57,7 @@ const MOCK_CATEGORIAS: { id: string; nombre: string; icono: string; color: strin
     color: '#C98A2C',
     indicadores: [
       {
-        label: 'Inflación interanual', valor: '118%', delta: '-42pp vs. año anterior', trend: 'down',
+        label: 'Inflación interanual', valor: '118%', delta: '-42pp vs. año anterior', trend: 'down', polaridad: 'negativo',
         fuente: { nombre: 'INDEC', url: 'https://www.indec.gob.ar/indec/web/Nivel4-Tema-3-5-31' },
         historias: historias(
           [268, 245, 225, 205, 188, 172, 158, 146, 136, 128, 122, 120, 119, 118],
@@ -62,7 +65,7 @@ const MOCK_CATEGORIAS: { id: string; nombre: string; icono: string; color: strin
         ),
       },
       {
-        label: 'Riesgo país (EMBI)', valor: '612 pb', delta: '-38pb en el mes', trend: 'down',
+        label: 'Riesgo país (EMBI)', valor: '612 pb', delta: '-38pb en el mes', trend: 'down', polaridad: 'negativo',
         fuente: { nombre: 'Ámbito Financiero', url: 'https://www.ambito.com/contenidos/riesgo-pais.html' },
         historias: historias(
           [950, 910, 880, 850, 820, 790, 760, 730, 700, 670, 650, 635, 620, 612],
@@ -70,7 +73,7 @@ const MOCK_CATEGORIAS: { id: string; nombre: string; icono: string; color: strin
         ),
       },
       {
-        label: 'Reservas netas BCRA', valor: 'US$ 29.400 M', delta: '+US$1.200M en el mes', trend: 'up',
+        label: 'Reservas netas BCRA', valor: 'US$ 29.400 M', delta: '+US$1.200M en el mes', trend: 'up', polaridad: 'positivo',
         fuente: { nombre: 'BCRA', url: 'https://www.bcra.gob.ar/PublicacionesEstadisticas/Principales_variables.asp' },
         historias: historias(
           [18.0, 18.5, 19.2, 20.0, 20.8, 21.5, 22.3, 23.1, 24.0, 24.9, 25.8, 27.0, 28.2, 29.4],
@@ -78,7 +81,7 @@ const MOCK_CATEGORIAS: { id: string; nombre: string; icono: string; color: strin
         ),
       },
       {
-        label: 'Resultado fiscal primario', valor: '+0.3% PBI', delta: 'superávit 8vo mes', trend: 'up',
+        label: 'Resultado fiscal primario', valor: '+0.3% PBI', delta: 'superávit 8vo mes', trend: 'up', polaridad: 'positivo',
         fuente: { nombre: 'Ministerio de Economía', url: 'https://www.argentina.gob.ar/economia' },
         historias: historias(
           [-1.8, -1.5, -1.3, -1.0, -0.8, -0.6, -0.4, -0.2, -0.1, 0.0, 0.1, 0.15, 0.25, 0.3],
@@ -94,7 +97,7 @@ const MOCK_CATEGORIAS: { id: string; nombre: string; icono: string; color: strin
     color: '#1F6F6B',
     indicadores: [
       {
-        label: 'Desempleo', valor: '7.2%', delta: '+0.3pp vs. trim. anterior', trend: 'up',
+        label: 'Desempleo', valor: '7.2%', delta: '+0.3pp vs. trim. anterior', trend: 'up', polaridad: 'negativo',
         fuente: { nombre: 'INDEC', url: 'https://www.indec.gob.ar/indec/web/Nivel4-Tema-4-31-58' },
         historias: historias(
           [6.0, 6.1, 6.2, 6.3, 6.4, 6.5, 6.6, 6.7, 6.8, 6.9, 7.0, 7.0, 7.1, 7.2],
@@ -102,7 +105,7 @@ const MOCK_CATEGORIAS: { id: string; nombre: string; icono: string; color: strin
         ),
       },
       {
-        label: 'Salario real', valor: '-1.4%', delta: 'interanual', trend: 'down',
+        label: 'Salario real', valor: '-1.4%', delta: 'interanual', trend: 'down', polaridad: 'positivo',
         fuente: { nombre: 'INDEC', url: 'https://www.indec.gob.ar/indec/web/Nivel4-Tema-3-5-31' },
         historias: historias(
           [-6.5, -6.0, -5.5, -5.0, -4.5, -4.0, -3.5, -3.0, -2.6, -2.2, -1.9, -1.7, -1.6, -1.4],
@@ -110,7 +113,7 @@ const MOCK_CATEGORIAS: { id: string; nombre: string; icono: string; color: strin
         ),
       },
       {
-        label: 'Empleo informal', valor: '41.8%', delta: 'sin cambios', trend: 'flat',
+        label: 'Empleo informal', valor: '41.8%', delta: 'sin cambios', trend: 'flat', polaridad: 'negativo',
         fuente: { nombre: 'INDEC', url: 'https://www.indec.gob.ar/indec/web/Nivel4-Tema-4-31-58' },
         historias: historias(
           [42.5, 42.3, 42.1, 42.0, 41.9, 42.0, 41.9, 41.8, 41.9, 41.8, 41.9, 41.8, 41.9, 41.8],
@@ -178,6 +181,7 @@ function toIndicadorVM(id: string, m: IndicadorMock): IndicadorVM {
     valor: m.valor,
     delta: m.delta,
     trend: m.trend,
+    polaridad: m.polaridad ?? 'neutral',
     fuente: m.fuente ?? null,
     historias: m.historias ?? null,
   };
@@ -202,12 +206,12 @@ export function datosMock(): DashboardData {
       brecha: 32,
     },
     ticker: [
-      { label: 'Inflación mensual', valor: '3.1%', trend: 'down' },
-      { label: 'Riesgo país', valor: '612 pb', trend: 'down' },
-      { label: 'Merval', valor: '+1.8%', trend: 'up' },
-      { label: 'Reservas BCRA', valor: 'US$ 29.400 M', trend: 'up' },
-      { label: 'EMAE', valor: '+0.6%', trend: 'up' },
-      { label: 'Desempleo', valor: '7.2%', trend: 'flat' },
+      { label: 'Inflación mensual', valor: '3.1%', trend: 'down', polaridad: 'negativo' },
+      { label: 'Riesgo país', valor: '612 pb', trend: 'down', polaridad: 'negativo' },
+      { label: 'Merval', valor: '+1.8%', trend: 'up', polaridad: 'neutral' },
+      { label: 'Reservas BCRA', valor: 'US$ 29.400 M', trend: 'up', polaridad: 'positivo' },
+      { label: 'EMAE', valor: '+0.6%', trend: 'up', polaridad: 'positivo' },
+      { label: 'Desempleo', valor: '7.2%', trend: 'flat', polaridad: 'negativo' },
     ],
     fuenteDatos: 'mock',
   };

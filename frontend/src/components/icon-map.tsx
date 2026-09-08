@@ -1,4 +1,4 @@
-import { Factory, Gauge, Globe2, HeartPulse, Landmark, Scale, Shield, Swords, TrendingUp, Users, type LucideIcon } from 'lucide-react';
+import { Factory, Gauge, Globe2, GraduationCap, HeartPulse, Landmark, Scale, Shield, Swords, TrendingUp, Users, type LucideIcon } from 'lucide-react';
 
 // Mapea el nombre de ícono guardado en Categoria.icono (Django) al
 // componente lucide-react real — mismo mapeo que ICONOS_DB en el artifact.
@@ -13,6 +13,7 @@ export const ICONOS: Record<string, LucideIcon> = {
   Gauge,
   Shield,
   Swords,
+  GraduationCap,
 };
 
 export function CategoriaIcon({ nombre, size = 15 }: { nombre: string; size?: number }) {

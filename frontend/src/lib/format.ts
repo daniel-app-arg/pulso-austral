@@ -41,3 +41,12 @@ export function hoyLargo(): string {
     month: 'long',
   });
 }
+
+/** Formatea un número con la convención es-AR (punto de miles, coma decimal),
+ * preservando la cantidad de decimales que ya traía (hasta 3) en vez de
+ * imponer un redondeo fijo — así "1852340" queda "1.852.340" y "50.492"
+ * queda "50,492" sin perder precisión. */
+export function formatearNumero(n: number): string {
+  const decimales = Math.min((n.toString().split('.')[1] ?? '').length, 3);
+  return n.toLocaleString('es-AR', { minimumFractionDigits: decimales, maximumFractionDigits: decimales });
+}

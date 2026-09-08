@@ -140,6 +140,7 @@ export interface ResumenIndicadorDTO {
   categoria_id: string;
   tipo: TipoIndicador;
   unidad: string;
+  polaridad: 'positivo' | 'negativo' | 'neutral';
   fuente: FuenteDTO | null;
   sin_datos: boolean;
   valor_inicio?: number | string | null;
@@ -184,6 +185,7 @@ export interface IndicadorVM {
   valor: string;
   delta: string;
   trend: Trend;
+  polaridad: 'positivo' | 'negativo' | 'neutral';
   fuente: Fuente | null;
   historias: Historias | null;
 }
@@ -218,7 +220,9 @@ export interface DestacadosVM {
     oficial: { valor: number; delta: number };
     blue: { valor: number; delta: number };
   };
-  merval: { valor: number; delta: number };
+  // Merval no tiene fuente real gratuita conocida (ver backend/README.md) —
+  // null en vez de 0 para no mostrar un valor que parezca real y no lo es.
+  merval: { valor: number; delta: number } | null;
   brecha: number;
 }
 
@@ -227,6 +231,6 @@ export interface DashboardData {
   timeline: EventoTimelineVM[];
   noticias: NoticiaVM[];
   destacados: DestacadosVM;
-  ticker: { label: string; valor: string; trend: Trend }[];
+  ticker: { label: string; valor: string; trend: Trend; polaridad: 'positivo' | 'negativo' | 'neutral' }[];
   fuenteDatos: 'api' | 'mock';
 }

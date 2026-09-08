@@ -47,7 +47,7 @@ function FilaIndicador({ ind }: { ind: ResumenIndicadorDTO }) {
           '—'
         ) : (
           <span className="pa-gob-variacion">
-            <TrendIcon trend={trend ?? 'flat'} size={12} />
+            <TrendIcon trend={trend ?? 'flat'} polaridad={ind.polaridad} size={12} />
             {ind.variacion_abs >= 0 ? '+' : ''}
             {formatNumero(ind.variacion_abs)}
             {unidadVariacion ? ` ${unidadVariacion}` : ''}

@@ -59,11 +59,20 @@ export function Masthead({ destacados, ticker, fuenteDatos }: Pick<DashboardData
         </div>
         <div className="pa-dollar-block">
           <div className="pa-dollar-label">Merval</div>
-          <div className="pa-dollar-value">{destacados.merval.valor.toLocaleString('es-AR')}</div>
-          <div className="pa-dollar-delta">
-            <TrendIcon trend={destacados.merval.delta > 0 ? 'up' : 'down'} />
-            {Math.abs(destacados.merval.delta)}% hoy
-          </div>
+          {destacados.merval ? (
+            <>
+              <div className="pa-dollar-value">{destacados.merval.valor.toLocaleString('es-AR')}</div>
+              <div className="pa-dollar-delta">
+                <TrendIcon trend={destacados.merval.delta > 0 ? 'up' : 'down'} />
+                {Math.abs(destacados.merval.delta)}% hoy
+              </div>
+            </>
+          ) : (
+            <>
+              <div className="pa-dollar-value">—</div>
+              <div className="pa-dollar-delta">sin fuente real disponible</div>
+            </>
+          )}
         </div>
         <div className="pa-brecha">
           <div className="pa-brecha-value">{destacados.brecha}%</div>
@@ -75,7 +84,7 @@ export function Masthead({ destacados, ticker, fuenteDatos }: Pick<DashboardData
         <div className="pa-ticker">
           {[...ticker, ...ticker].map((item, i) => (
             <span className="pa-ticker-item" key={i}>
-              {item.label} <b>{item.valor}</b> <TrendIcon trend={item.trend} size={12} />
+              {item.label} <b>{item.valor}</b> <TrendIcon trend={item.trend} polaridad={item.polaridad} size={12} />
             </span>
           ))}
         </div>

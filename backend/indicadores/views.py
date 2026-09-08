@@ -184,6 +184,7 @@ def _resumir_indicador(indicador, desde, hasta):
         'categoria_id': indicador.categoria_id,
         'tipo': indicador.tipo,
         'unidad': indicador.unidad,
+        'polaridad': indicador.polaridad,
         'fuente': {'nombre': indicador.fuente.nombre, 'url': indicador.fuente.url} if indicador.fuente else None,
     }
     if not valores:

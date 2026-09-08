@@ -122,7 +122,7 @@ METODOLOGIAS = {
     'exportaciones': 'Valor FOB total de bienes exportados por mes, en millones de dólares — INDEC.',
     # institucional
     'cpi_corrupcion': 'Índice de Percepción de la Corrupción (Transparencia Internacional): encuesta a expertos y empresarios sobre corrupción en el sector público, de 0 (muy corrupto) a 100 (muy transparente).',
-    'estado_derecho': 'Rule of Law Index (World Justice Project): encuestas a hogares y expertos sobre 8 factores (límites al poder, ausencia de corrupción, derechos fundamentales, etc.), de 0 a 1.',
+    'estado_derecho': 'Posición de Argentina en el Rule of Law Index (World Justice Project): ranking global armado con encuestas a hogares y expertos sobre 8 factores (límites al poder, ausencia de corrupción, derechos fundamentales, etc.) — cuanto más bajo el número, mejor.',
     'gasto_publico': 'Gasto público consolidado (nación + provincias + municipios) como % del PBI.',
     'confianza_gobierno': 'Índice de Confianza en el Gobierno (UTDT): encuesta mensual sobre la evaluación de la gestión en 5 dimensiones, escala de 0 a 5.',
     # bienestar
@@ -133,8 +133,8 @@ METODOLOGIAS = {
     # percepcion
     'confianza_consumidor': 'Índice de Confianza del Consumidor (UTDT): encuesta mensual sobre la percepción de la situación personal y macroeconómica, de 0 a 100.',
     'expectativas_inflacion': 'Mediana de las proyecciones de inflación a 12 meses del Relevamiento de Expectativas de Mercado (REM) del BCRA — encuesta a consultoras y bancos.',
-    'humor_social': 'Índice de humor social de encuestadoras privadas: combina percepción económica, social e institucional en un solo puntaje.',
-    'aprobacion_gobierno': 'Porcentaje de imagen positiva de la gestión de gobierno — encuestas de opinión pública.',
+    'humor_social': 'Porcentaje de personas que se declara optimista sobre la situación económica del país, según encuestadoras privadas relevadas por medios especializados.',
+    'aprobacion_gobierno': 'Porcentaje que aprueba la gestión de gobierno — encuestas de opinión pública, distintas encuestadoras según el mes.',
     # geo (cualitativos)
     'acuerdo_fmi': 'Estado del programa vigente con el FMI (revisión de metas, desembolsos), en base a comunicados oficiales del organismo y del gobierno.',
     'calificacion_soberana': 'Calificación crediticia de la deuda soberana en moneda extranjera asignada por una agencia calificadora (S&P Global Ratings).',
@@ -144,12 +144,17 @@ METODOLOGIAS = {
     'tasa_homicidios': 'Homicidios dolosos cada 100.000 habitantes por año — Ministerio de Seguridad, Sistema Nacional de Información Criminal.',
     'delitos_propiedad': 'Variación interanual de delitos contra la propiedad (robos, hurtos) registrados por las fuerzas de seguridad.',
     'tasa_encarcelamiento': 'Personas privadas de la libertad cada 100.000 habitantes — Sistema Nacional de Estadísticas sobre Ejecución de la Pena (SNEEP).',
-    'percepcion_inseguridad': 'Porcentaje de la población que menciona la inseguridad entre los principales problemas del país — encuestas de opinión pública.',
+    'percepcion_inseguridad': '"Termómetro" de riesgo delictivo percibido, de 0 a 10 — Monitor de Inseguridad, Observatorio de Psicología Social Aplicada (OPSA-UBA).',
     # desarrollo_militar
     'gasto_defensa': 'Gasto en defensa como % del PBI — base de datos de gasto militar de SIPRI (Stockholm International Peace Research Institute).',
     'efectivos_ffaa': 'Personal militar activo (Ejército, Armada, Fuerza Aérea), en miles — Ministerio de Defensa.',
     'inversion_equipamiento': 'Porcentaje del presupuesto de defensa destinado a inversión en equipamiento y modernización, en vez de gastos corrientes.',
     'ranking_poder_militar': 'Posición de Argentina en el ranking de poder militar convencional de Global Firepower — cuanto más bajo el número, mayor poder relativo estimado.',
+    # educacion
+    'resultados_pisa': 'Puntaje de Argentina en la prueba de Matemática del Programa Internacional de Evaluación de Estudiantes (PISA, OCDE), aplicada cada 3 años a alumnos de 15 años.',
+    'gasto_educativo': 'Inversión educativa del Estado nacional (no incluye provincias) como % del PBI, según la Ley de Financiamiento Educativo — Argentinos por la Educación, en base a datos del Ministerio de Economía.',
+    'tasa_escolarizacion': 'Porcentaje de niños, niñas y adolescentes de 4 a 17 años que asisten a un establecimiento educativo formal — INDEC (EPH/Censo).',
+    'tasa_analfabetismo': 'Porcentaje de la población de 10 años o más que no sabe leer ni escribir — INDEC (Censo Nacional de Población).',
 }
 
 

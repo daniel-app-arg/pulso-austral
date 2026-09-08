@@ -84,10 +84,10 @@ si por algún motivo la URL no lo trae — no hace falta tocar código.
 
 `Indicador.actualizacion_automatica` (bool) distingue, en la base y en la
 API (`/api/indicadores/?actualizacion_automatica=true`), los indicadores
-con datos reales de una fuente externa (los 6 que toca
+con datos reales de una fuente externa (los 8 que toca
 `fetch_datos_reales`: dólar oficial/blue, reservas BCRA, inflación
-interanual, EMAE, desempleo) del resto — ilustrativos o editoriales, que no
-necesitan actualizarse nunca. El flag lo fijan **dos** comandos a
+interanual, EMAE, desempleo, balanza comercial, exportaciones) del resto —
+ilustrativos o editoriales, que no necesitan actualizarse nunca. El flag lo fijan **dos** comandos a
 propósito, en vez de uno: `seed_pulso_austral.py` (vía el set
 `INDICADORES_CON_DATOS_REALES`) y `fetch_datos_reales.py` (vía
 `Command.INDICADORES_GESTIONADOS`, al final de `handle()`) — así, si en el
@@ -227,7 +227,7 @@ restaurar los valores reales:
 ./venv/Scripts/python.exe manage.py fetch_datos_reales
 ```
 
-Reemplaza los valores ilustrativos de 4 indicadores por datos de fuentes
+Reemplaza los valores ilustrativos de 8 indicadores por datos de fuentes
 públicas reales, sin API key:
 
 - **`dolar_oficial`** y **`reservas_bcra`**: serie diaria completa (día,
@@ -245,6 +245,13 @@ públicas reales, sin API key:
   trimestral en origen — se guarda igual bajo granularidad `mes` (con la
   fecha de inicio del trimestre), mismo criterio que para otras series de
   baja frecuencia.
+- **`balanza_comercial`** y **`exportaciones`**: dataset "Intercambio
+  Comercial Argentino" (INDEC, vía datos.gob.ar), ya en US$ M — sin factor
+  de conversión. No hay serie anual resuelta a mano para este dataset, así
+  que `anio` se arma resampleando la mensual (último mes cargado de cada
+  año). El saldo comercial puede cruzar cero (déficit ↔ superávit), así que
+  su delta se expresa en valor absoluto (`_con_deltas_abs`) en vez de %
+  relativo — mismo motivo que EMAE/inflación con `_con_deltas_pp`.
 
 El comando es idempotente (`update_or_create`) y limpia los resabios del
 seed ilustrativo que quedan más allá del último dato real disponible (el
@@ -263,7 +270,12 @@ dos. Conectarlos implica registrarse en una API de mercado (ByMA/IOL/etc.)
 o pagar un feed — pendiente de decisión, no de código. Tampoco encontramos
 en datos.gob.ar una serie nacional de pobreza/indigencia ni de canasta
 básica que estuviera actualizada (las que hay quedaron en 2024/2025 o son
-solo de CABA) — siguen ilustrativas.
+solo de CABA) — siguen ilustrativas. `resultado_fiscal` e
+`ipi_manufacturero` también quedan pendientes: hay series de INDEC/Hacienda
+en datos.gob.ar, pero en unidades distintas a las del indicador (pesos
+nominales en vez de % PBI; índice nivel en vez de variación interanual) —
+conectarlas requiere una serie adicional (PBI o el propio IPI en variación
+%) para hacer la conversión, no solo apuntar a un `id` nuevo.
 
 ## Contenido editorial (`indicadores/management/commands/seed_editorial.py`)
 
@@ -316,7 +328,7 @@ nada.
 ## Pendiente
 
 - [ ] Conectar Merval y riesgo país a una fuente real (requiere elegir/pagar una API de mercado)
-- [ ] Reemplazar los valores ilustrativos de pobreza, producción (salvo EMAE), sector_externo, institucional, bienestar y percepcion — la mayoría no tiene una fuente pública tan simple como la del BCRA/datos.gob.ar
+- [ ] Reemplazar los valores ilustrativos de pobreza, producción (salvo EMAE), institucional, bienestar y percepcion — la mayoría no tiene una fuente pública tan simple como la del BCRA/datos.gob.ar (sector_externo ya tiene 2 de 4 reales: balanza comercial y exportaciones)
 - [ ] Cron / Celery beat que corra `fetch_datos_reales` periódicamente
 - [ ] Revisar a mano las caracterizaciones de `seed_editorial` (es un punto de partida, no la última palabra)
 - [ ] Cargar series reales anteriores a 2017 para que la comparativa por gobierno tenga datos de los mandatos de Kirchner/CFK/Macri (hoy aparecen total o parcialmente `sin_datos`)

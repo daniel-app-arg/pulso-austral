@@ -25,7 +25,7 @@ export function IndicadorCard({
       <div className="pa-card-label">{indicador.label}</div>
       <div className="pa-card-value">{indicador.valor}</div>
       <div className="pa-card-delta">
-        <TrendIcon trend={indicador.trend} size={12} />
+        <TrendIcon trend={indicador.trend} polaridad={indicador.polaridad} size={12} />
         {indicador.delta}
       </div>
       {esClickeable && (

@@ -35,12 +35,26 @@ async function apiGet<T>(path: string): Promise<T> {
   return res.json() as Promise<T>;
 }
 
-/** Trae una colección paginada completa en una sola pasada (el dataset de
- * este dashboard es chico: unos pocos cientos de filas por tabla). */
+/** Trae una colección paginada completa, siguiendo `next` hasta agotarla —
+ * las series diarias (BCRA) crecen solas con el tiempo, así que un límite
+ * fijo de una sola página eventualmente se queda corto y trunca datos en
+ * silencio (pasó con indicador-valores al pasar de ~1.800 a ~2.200 filas).
+ * Tope de 20 páginas (40.000 filas) como salvaguarda ante un `next` que no
+ * termine de agotarse nunca. */
 async function apiGetAll<T>(path: string): Promise<T[]> {
   const sep = path.includes('?') ? '&' : '?';
-  const data = await apiGet<Paginada<T>>(`${path}${sep}limit=2000`);
-  return data.results;
+  let url: string | null = `${API_BASE_URL}${path}${sep}limit=2000`;
+  const salida: T[] = [];
+  for (let pagina = 0; url && pagina < 20; pagina++) {
+    const res = await fetch(url, { cache: 'no-store' });
+    if (!res.ok) {
+      throw new Error(`API respondió ${res.status} en ${path}`);
+    }
+    const data: Paginada<T> = await res.json();
+    salida.push(...data.results);
+    url = data.next;
+  }
+  return salida;
 }
 
 export interface DatosCrudos {

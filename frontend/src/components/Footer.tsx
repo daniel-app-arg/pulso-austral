@@ -1,7 +1,10 @@
+import Link from 'next/link';
+
 export function Footer() {
   return (
     <div className="pa-footer">
-      Fuentes: INDEC · BCRA · REM · Moody&apos;s / S&amp;P — algunos valores todavía son de ejemplo, en proceso de conectar fuentes reales
+      Cada indicador cita su fuente real (INDEC, BCRA y otros organismos y encuestadoras) — el que todavía no tiene un dato verificado se muestra vacío en vez de inventado. Ver{' '}
+      <Link href="/glosario">glosario</Link> para el detalle.
     </div>
   );
 }

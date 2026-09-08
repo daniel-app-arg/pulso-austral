@@ -1,5 +1,5 @@
 import type { DatosCrudos } from './api';
-import { etiquetaDesdeFecha, fechaLarga } from './format';
+import { etiquetaDesdeFecha, fechaLarga, formatearNumero } from './format';
 import type {
   CategoriaVM,
   DashboardData,
@@ -59,12 +59,16 @@ function construirIndicador(ind: DatosCrudos['indicadores'][number], valores: In
 
   const tieneHistoria = Object.values(porGranularidad).some((serie) => (serie?.length ?? 0) > 1);
 
+  const valorFormateado =
+    typeof ultimo?.valor === 'number' ? formatearNumero(ultimo.valor) : (ultimo?.valor ?? '—');
+
   return {
     id: ind.id,
     label: ind.nombre,
-    valor: ind.tipo === 'cualitativo' ? String(ultimo?.valor ?? '—') : `${ultimo?.valor ?? '—'}${ind.unidad ? ' ' + ind.unidad : ''}`,
+    valor: ind.tipo === 'cualitativo' ? String(valorFormateado) : `${valorFormateado}${ind.unidad ? ' ' + ind.unidad : ''}`,
     delta: ultimo?.delta || '',
     trend: (ultimo?.trend as IndicadorVM['trend']) || 'flat',
+    polaridad: ind.polaridad,
     fuente: ind.fuente ? { nombre: ind.fuente.nombre, url: ind.fuente.url } : null,
     historias: ind.tipo === 'numerico' && tieneHistoria ? porGranularidad : null,
   };
@@ -114,10 +118,7 @@ export function construirDestacados({ destacados }: DatosCrudos): DestacadosVM {
         delta: destacados.dolares.blue?.delta ?? 0,
       },
     },
-    merval: {
-      valor: destacados.merval?.valor ?? 0,
-      delta: destacados.merval?.delta ?? 0,
-    },
+    merval: destacados.merval ? { valor: destacados.merval.valor, delta: destacados.merval.delta } : null,
     brecha: destacados.brecha ?? 0,
   };
 }
@@ -131,7 +132,7 @@ export function construirTicker(categorias: CategoriaVM[]): DashboardData['ticke
   const porId = new Map(categorias.flatMap((c) => c.indicadores).map((i) => [i.id, i]));
   return TICKER_IDS.map((id) => porId.get(id))
     .filter((ind): ind is NonNullable<typeof ind> => Boolean(ind))
-    .map((ind) => ({ label: ind.label, valor: ind.valor, trend: ind.trend }));
+    .map((ind) => ({ label: ind.label, valor: ind.valor, trend: ind.trend, polaridad: ind.polaridad }));
 }
 
 export function construirDashboardData(crudos: DatosCrudos): DashboardData {
