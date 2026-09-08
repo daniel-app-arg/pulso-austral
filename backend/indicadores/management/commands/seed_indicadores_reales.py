@@ -508,6 +508,81 @@ PUNTOS: list[tuple[str, str, date, float | None, str, str, str]] = [
      'mismo valor ya cargado para el inicio de Macri — Mercosur/UE', 'flat'),
     ('acceso_servicios', 'anio', date(2015, 12, 9), 53.8, '', 'cloacas, Censo 2010, carry-forward, único dato disponible — INDEC', 'flat'),
     ('tasa_analfabetismo', 'anio', date(2015, 12, 9), 1.9, '', 'Censo 2010, carry-forward, único dato disponible — INDEC', 'flat'),
+
+    # -- Néstor Kirchner (25-may-2003 a 10-dic-2007) — cierre de mandato ---
+    # El cierre de su mandato es el mismo día que el inicio de CFK1 (una
+    # transición real de persona, distinta al caso CFK1→CFK2), así que
+    # sigue el mismo criterio 9/11-dic que el resto del archivo. La
+    # mayoría de estos valores son HECHOS del país a fines de 2007 (no
+    # dependen de quién esté sentado en el sillón), así que se reutiliza
+    # directamente el mismo dato ya investigado para el inicio de CFK1
+    # más arriba — sin duplicar investigación. La excepción es
+    # aprobacion_gobierno, que si es específico de la persona (la
+    # aprobación de público de diciembre de 2007 ya cargada es la de
+    # CFK recién asumida, no la de NK saliente) y queda para investigar
+    # aparte si se consigue un dato real de la salida de NK.
+    ('reservas_bcra', 'mes', date(2007, 12, 9), 45.6, '', 'mismo dato de dic-2007 ya cargado para el inicio de CFK1', 'flat'),
+    ('resultado_fiscal', 'mes', date(2007, 12, 9), 2.9, '', 'mismo dato de dic-2007 ya cargado para el inicio de CFK1', 'flat'),
+    ('ipi_manufacturero', 'mes', date(2007, 12, 9), 9.5, '', 'mismo dato de dic-2007 ya cargado para el inicio de CFK1', 'flat'),
+    ('capacidad_instalada', 'mes', date(2007, 12, 9), 74.5, '', 'mismo dato de dic-2007 ya cargado para el inicio de CFK1', 'flat'),
+    ('balanza_comercial', 'mes', date(2007, 12, 9), 1786, '', 'mismo dato de dic-2007 ya cargado para el inicio de CFK1', 'flat'),
+    ('exportaciones', 'mes', date(2007, 12, 9), 5668, '', 'mismo dato de dic-2007 ya cargado para el inicio de CFK1', 'flat'),
+    ('cuenta_corriente', 'anio', date(2007, 12, 9), 2.10, '', 'mismo dato de 2007 ya cargado para el inicio de CFK1', 'flat'),
+    ('deuda_externa', 'mes', date(2007, 12, 9), 120.8, '', 'mismo dato de dic-2007 ya cargado para el inicio de CFK1', 'flat'),
+    ('cpi_corrupcion', 'anio', date(2007, 12, 9), 29, '', 'mismo dato de 2007 ya cargado para el inicio de CFK1', 'flat'),
+    ('esperanza_vida', 'anio', date(2007, 12, 9), 74.78, '', 'mismo dato de 2007 ya cargado para el inicio de CFK1', 'flat'),
+    ('mortalidad_infantil', 'anio', date(2007, 12, 9), 13.3, '', 'mismo dato de 2007 ya cargado para el inicio de CFK1', 'flat'),
+    ('tasa_homicidios', 'anio', date(2007, 12, 9), 5.0, '', 'mismo dato de 2007 ya cargado para el inicio de CFK1', 'flat'),
+    ('resultados_pisa', 'anio', date(2007, 12, 9), 381, '', 'edición 2006, mismo dato ya cargado para el inicio de CFK1', 'flat'),
+    ('acuerdo_fmi', 'mes', date(2007, 12, 9), None, 'Sin programa vigente',
+     'sin acuerdo con el FMI desde 2004-2006, tras el pago de la deuda', 'flat'),
+    ('swap_china', 'mes', date(2007, 12, 9), None, 'No existía swap con China',
+     'el primer swap se firmó recién en 2009', 'flat'),
+    ('mercosur_ue', 'mes', date(2007, 12, 9), None, 'Negociaciones estancadas, sin acuerdo',
+     'negociaciones estancadas desde 2004', 'flat'),
+
+    # -- Néstor Kirchner (25-may-2003 a 10-dic-2007) — inicio de mandato ---
+    # A diferencia del resto del archivo, acá no hace falta la duplicación
+    # 9/11-dic: el 25-may-2003 no es un límite compartido con ningún otro
+    # gobierno rastreado en este sitio (antes de NK hubo un interinato de
+    # Duhalde que no está cargado como Gobierno propio), así que se usa
+    # directamente la fecha real de asunción. Es la era más difícil de
+    # todo el sitio para conseguir datos: apenas 17 meses después del
+    # colapso de la convertibilidad (dic-2001), con archivos históricos
+    # de INDEC poco indexados/accesibles por búsqueda web. Se dejaron sin
+    # cargar a propósito: canasta_basica (solo hay dato "por adulto
+    # equivalente" verificado, no "familia tipo" como el resto de la
+    # serie — convertir por coeficiente sería una estimación, no un
+    # dato real), produccion_agropecuaria (rango 47-50Mt sin cifra
+    # oficial única), brecha_ingresos (la propia investigación detectó
+    # que la única cifra hallada podía ser fabricada por el resumen del
+    # buscador, no verificable en la fuente citada), salario_real,
+    # empleo_informal, ipi_manufacturero, capacidad_instalada,
+    # deuda_externa (3 fuentes con cifras muy distintas sin forma de
+    # resolver cuál es la oficial), balanza_comercial y exportaciones
+    # (solo hay dato ANUAL, mezclarlo con el resto de la serie mensual
+    # habría distorsionado la escala).
+    ('reservas_bcra', 'mes', date(2003, 5, 25), 11.048, '', '25-may-2003, día de la asunción — El Cronista (vía datos BCRA)', 'flat'),
+    ('resultado_fiscal', 'mes', date(2003, 5, 25), 1.9, '', 'año 2003, inicio de los superávits gemelos — Infobae/UDESA', 'flat'),
+    ('tasa_pobreza', 'mes', date(2003, 5, 25), 54.0, '', '1er semestre 2003, venía de un pico de ~57,5% en 2002 — INDEC (EPH)', 'flat'),
+    ('tasa_indigencia', 'mes', date(2003, 5, 25), 27.7, '', '1er semestre 2003 — INDEC (EPH)', 'flat'),
+    ('gini', 'mes', date(2003, 5, 25), 0.534, '', 'año 2003, serie oficial pre-intervención — INDEC (EPH), vía Chequeado', 'flat'),
+    ('cuenta_corriente', 'anio', date(2003, 5, 25), 6.38, '', 'año 2003 — Banco Mundial (BN.CAB.XOKA.GD.ZS)', 'flat'),
+    ('cpi_corrupcion', 'anio', date(2003, 5, 25), 25, '', 'escala vieja 2,5/10 — Transparencia Internacional 2003', 'flat'),
+    ('gasto_publico', 'mes', date(2003, 5, 25), 29.4, '', 'Nación+provincias+municipios, año 2003 — Chequeado (verificado)', 'flat'),
+    ('confianza_gobierno', 'mes', date(2003, 5, 25), 2.68, '', 'jun-2003, mes de transición, dato más cercano a mayo — UTDT (ICG)', 'flat'),
+    ('esperanza_vida', 'anio', date(2003, 5, 25), 74.3, '', 'año 2003 — Banco Mundial (SP.DYN.LE00.IN)', 'flat'),
+    ('cobertura_salud', 'anio', date(2003, 5, 25), 52, '', 'Censo 2001, ~48% sin cobertura — INDEC', 'flat'),
+    ('mortalidad_infantil', 'anio', date(2003, 5, 25), 15.3, '', 'estimación Banco Mundial (metodología distinta a DEIS, usar con cautela)', 'flat'),
+    ('tasa_analfabetismo', 'anio', date(2003, 5, 25), 2.6, '', 'Censo 2001 — INDEC', 'flat'),
+    ('aprobacion_gobierno', 'mes', date(2003, 5, 25), 80, '', '~80%, imagen positiva, luna de miel post-asunción — Equis/Analogías (aprox.)', 'flat'),
+    ('aprobacion_gobierno', 'mes', date(2007, 12, 9), 75, '', '75%, imagen positiva al dejar el cargo, mejor desde 1983 — CEOP/Analogías', 'up'),
+    ('gasto_defensa', 'anio', date(2003, 5, 25), 1.06, '', '1,06% del PBI — SIPRI/Banco Mundial, vía IndexMundi', 'flat'),
+    ('resultados_pisa', 'anio', date(2003, 5, 25), 388, '', 'edición PISA 2000, la más cercana disponible (no hubo edición 2003)', 'flat'),
+    ('calificacion_soberana', 'mes', date(2003, 5, 25), None, 'DDD',
+     'default declarado dic-2001, sin cambios desde ene-2002 — S&P', 'flat'),
+    ('acuerdo_fmi', 'mes', date(2003, 5, 25), None, 'Stand-by transitorio (ene-2003), en renegociación',
+     'firmado bajo Duhalde/Lavagna; el acuerdo trienal se firma recién en sep-2003', 'flat'),
 ]
 
 
