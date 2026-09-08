@@ -2,7 +2,6 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Coffee } from 'lucide-react';
 
 const LINKS = [
   { href: '/', label: 'Dashboard' },
@@ -11,10 +10,11 @@ const LINKS = [
   { href: '/glosario', label: 'Glosario' },
 ];
 
-// TODO: reemplazar por el link real de Cafecito cuando exista la cuenta
-// (cafecito.app/<usuario>) — hasta entonces queda como placeholder, no
-// lleva a ningún lado todavía.
-const LINK_APOYO = 'https://cafecito.app/pulsoaustral';
+// El botón "Apoyá este proyecto" (Cafecito) se sacó a pedido explícito
+// hasta resolver qué método de cobro usar sin exponer la identidad
+// personal del operador del sitio — ver historial de conversación. La
+// clase `.pa-sitenav-apoyo` en globals.css queda sin usar por ahora,
+// lista para cuando se retome.
 
 export function SiteNav() {
   const pathname = usePathname();
@@ -25,10 +25,6 @@ export function SiteNav() {
           {l.label}
         </Link>
       ))}
-      <a href={LINK_APOYO} target="_blank" rel="noopener noreferrer" className="pa-sitenav-apoyo">
-        <Coffee size={14} />
-        Apoyá este proyecto
-      </a>
     </nav>
   );
 }
