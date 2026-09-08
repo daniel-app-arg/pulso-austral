@@ -20,6 +20,28 @@ import type {
 
 const API_BASE_URL = process.env.API_BASE_URL || 'http://127.0.0.1:8000/api';
 
+// Los datos no cambian en tiempo real: se actualizan cuando corre
+// `fetch_datos_reales` (indicadores automáticos) o cuando se corre un
+// seed manual (histórico, esporádico) — así que cachear la respuesta de
+// la API no le resta nada de "actualidad" al sitio, pero evita volver a
+// pegarle a Django/Neon en cada visita. Antes esto era `cache:
+// 'no-store'` en todos los fetches (sin excepción), lo que apagaba por
+// completo el cache de Next.js: cada carga de página, de cada
+// visitante, disparaba un round-trip nuevo — incluidas las 2 páginas
+// secuenciales de indicador-valores y el cálculo completo de
+// GobiernoResumenView sobre ~50 indicadores. Con el sitio corriendo en
+// planes gratis (Render se "duerme" a los 15 min sin uso, Neon
+// suspende su cómputo), eso hacía que la carga tardara 8-19s SIEMPRE,
+// no solo en el primer visitante tras la inactividad.
+//
+// De todos los indicadores, el único que efectivamente se actualiza
+// varias veces por día es `/destacados/` (dólar oficial, dólar blue y
+// Merval — 2 veces por día). Todo lo demás (el resto de los
+// indicadores, noticias, línea de tiempo, gobiernos) cambia mucho más
+// esporádicamente, así que se cachea una semana entera.
+const REVALIDATE_DESTACADOS = 60 * 60 * 3; // 3 h — dólar/Merval, únicos que se actualizan 2x/día
+const REVALIDATE_LARGO = 60 * 60 * 24 * 7; // 1 semana — todo lo demás
+
 interface Paginada<T> {
   count: number;
   next: string | null;
@@ -27,8 +49,8 @@ interface Paginada<T> {
   results: T[];
 }
 
-async function apiGet<T>(path: string): Promise<T> {
-  const res = await fetch(`${API_BASE_URL}${path}`, { cache: 'no-store' });
+async function apiGet<T>(path: string, revalidate: number = REVALIDATE_LARGO): Promise<T> {
+  const res = await fetch(`${API_BASE_URL}${path}`, { next: { revalidate } });
   if (!res.ok) {
     throw new Error(`API respondió ${res.status} en ${path}`);
   }
@@ -41,12 +63,12 @@ async function apiGet<T>(path: string): Promise<T> {
  * silencio (pasó con indicador-valores al pasar de ~1.800 a ~2.200 filas).
  * Tope de 20 páginas (40.000 filas) como salvaguarda ante un `next` que no
  * termine de agotarse nunca. */
-async function apiGetAll<T>(path: string): Promise<T[]> {
+async function apiGetAll<T>(path: string, revalidate: number = REVALIDATE_LARGO): Promise<T[]> {
   const sep = path.includes('?') ? '&' : '?';
   let url: string | null = `${API_BASE_URL}${path}${sep}limit=2000`;
   const salida: T[] = [];
   for (let pagina = 0; url && pagina < 20; pagina++) {
-    const res = await fetch(url, { cache: 'no-store' });
+    const res = await fetch(url, { next: { revalidate } });
     if (!res.ok) {
       throw new Error(`API respondió ${res.status} en ${path}`);
     }
@@ -73,7 +95,7 @@ export async function fetchDatosCrudos(): Promise<DatosCrudos> {
     apiGetAll<IndicadorValorDTO>('/indicador-valores/'),
     apiGetAll<EventoTimelineDTO>('/eventos-timeline/'),
     apiGetAll<NoticiaDTO>('/noticias/'),
-    apiGet<DestacadosDTO>('/destacados/'),
+    apiGet<DestacadosDTO>('/destacados/', REVALIDATE_DESTACADOS),
   ]);
   return { categorias, indicadores, valores, eventos, noticias, destacados };
 }

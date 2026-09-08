@@ -75,6 +75,14 @@ MEDIOS = [
     ('radio-mitre', 'Radio Mitre', 'https://radiomitre.cienradios.com/', 'radio', 'centro_derecha',
      'Radio de noticias del Grupo Clarín; comparte la orientación editorial general '
      'del multimedios.'),
+    ('presidencia-nacion', 'Presidencia de la Nación — Bitácora de gestión', 'https://www.argentina.gob.ar/bitacora',
+     'agencia', 'derecha',
+     'NO es un medio de prensa independiente: es la comunicación oficial del Poder '
+     'Ejecutivo Nacional, un registro autopublicado de sus propios logros de gestión '
+     '("bitácora"), sin cobertura de hechos negativos ni contrapunto — se etiqueta '
+     'como fuente oficial, no periodística, para que quede clara la diferencia con '
+     'el resto del directorio. La orientación "derecha" describe el signo político '
+     'del gobierno que la redacta, no una caracterización editorial de terceros.'),
 ]
 
 # Mandatos presidenciales desde el retorno a mandatos de 4 años (reforma

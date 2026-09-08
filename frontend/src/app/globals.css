@@ -542,6 +542,23 @@ a.pa-noticia-fuente:hover {
 .pa-sitenav a:hover { color: var(--paper); }
 .pa-sitenav a.active { color: var(--ochre); }
 
+.pa-sitenav-apoyo {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: auto;
+  padding: 4px 12px;
+  border: 1px solid #3D5560;
+  border-radius: 999px;
+  color: #A9BBC0 !important;
+  font-weight: 500;
+  transition: border-color 0.15s, color 0.15s;
+}
+.pa-sitenav-apoyo:hover {
+  border-color: var(--ochre);
+  color: var(--ochre) !important;
+}
+
 .pa-page-intro {
   max-width: 980px;
   margin: 20px auto 0 auto;
