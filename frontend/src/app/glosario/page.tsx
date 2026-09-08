@@ -16,6 +16,41 @@ export default async function GlosarioPage() {
         tienen metodología documentada lo dicen explícitamente — mejor eso que inventar un texto.
       </p>
 
+      <div className="pa-acerca">
+        <div className="pa-acerca-titulo">Acerca de este sitio</div>
+        <ul className="pa-acerca-lista">
+          <li>
+            <b>Qué es.</b> Pulso Austral es un proyecto independiente, sin afiliación partidaria ni
+            gubernamental. No representa a ningún gobierno, partido ni organización.
+          </li>
+          <li>
+            <b>Cómo se tratan las fuentes.</b> Cada indicador cita su fuente real (INDEC, BCRA y
+            otros organismos y encuestadoras). Cuando no se encuentra un dato verificable, el
+            campo se muestra vacío — nunca se inventa un número para que &quot;se vea completo&quot;.
+          </li>
+          <li>
+            <b>Investigación asistida por IA.</b> Buena parte de las series históricas de este
+            sitio se compiló con ayuda de investigación asistida por IA, contrastando fuentes
+            públicas. Es un proceso con verificación, no infalible — pueden colarse errores de
+            interpretación. Si encontrás uno, avisá para corregirlo.
+          </li>
+          <li>
+            <b>Estimaciones propias.</b> Algunos valores (por ejemplo, salario real de meses sin
+            una cifra oficial directa) son cálculos propios a partir de series oficiales — nominal
+            menos inflación del mismo período. Se marcan como &quot;estimado&quot; o &quot;calculado&quot; en la
+            nota de cada dato, para distinguirlos de una cifra publicada tal cual por el organismo.
+          </li>
+          <li>
+            <b>La bitácora oficial del Gobierno.</b> Algunas noticias y eventos de la línea de
+            tiempo citan como fuente la &quot;Bitácora de gestión&quot; del Poder Ejecutivo Nacional
+            (argentina.gob.ar). No es periodismo independiente: es comunicación oficial del
+            gobierno sobre su propia gestión, sin cobertura de hechos negativos ni contrapunto —
+            por eso se etiqueta aparte del resto de las fuentes. Ver la página{' '}
+            <a href="/medios">Medios</a> para la caracterización de cada fuente.
+          </li>
+        </ul>
+      </div>
+
       {data === null && (
         <p className="pa-page-intro">No se pudo conectar con el backend para traer el glosario.</p>
       )}

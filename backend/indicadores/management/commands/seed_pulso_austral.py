@@ -550,6 +550,7 @@ TIMELINE = [
     (date(2026, 5, 21), "El FMI aprueba la 2ª revisión y destraba un desembolso de US$1.000 millones", "positivo", "geo"),
     (date(2026, 7, 21), "S&P, Fitch y Moody's alinean a Argentina en B- por 1ª vez en una década", "positivo", "macro"),
     (date(2026, 9, 7), "Vuelve la inscripción al Servicio Militar Voluntario con edad ampliada", "neutral", "desarrollo_militar"),
+    (date(2026, 9, 8), "Argentina tiene su peor resultado en las pruebas PISA desde 2001", "negativo", "educacion"),
 ]
 
 

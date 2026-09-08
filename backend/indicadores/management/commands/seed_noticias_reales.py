@@ -207,6 +207,14 @@ NOTICIAS_REALES = [
         "https://www.lanacion.com.ar/sociedad/pruebas-pisa-la-crisis-de-los-aprendizajes-basicos-a-contrapelo-de-todos-los-discursos-de-inclusion-nid05122023/",
     ),
     (
+        "educacion", "la-nacion", date(2026, 9, 8), "Educación",
+        "Pruebas PISA 2025: Argentina tuvo el peor resultado en Matemática desde 2001",
+        "El país obtuvo 367 puntos, 89 puntos por debajo del promedio de la OCDE, y quedó en el "
+        "puesto 75 de 91 sistemas educativos evaluados; solo el 24% de los alumnos de 15 años "
+        "alcanzó el nivel básico de la materia.",
+        "https://www.lanacion.com.ar/sociedad/pruebas-pisa-2025-la-argentina-vuelve-a-caer-y-menos-del-8-de-los-alumnos-alcanza-el-nivel-basico-en-nid08092026/",
+    ),
+    (
         "educacion", "perfil", date(2024, 10, 3), "Educación",
         "Milei vetó la Ley de Financiamiento Universitario y el Congreso no logró revertirlo",
         "La norma preveía actualizar por inflación el presupuesto de las universidades "

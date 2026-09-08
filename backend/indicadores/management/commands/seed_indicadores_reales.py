@@ -83,11 +83,75 @@ PUNTOS: list[tuple[str, str, date, float | None, str, str, str]] = [
     ('resultado_fiscal', 'mes', date(2026, 6, 1), 0.6, '', 'acumulado a junio', 'up'),
     ('resultado_fiscal', 'mes', date(2026, 7, 1), 0.9, '', 'acumulado a julio — meta anual 1,4-1,5% PBI', 'up'),
     # -- empleo -----------------------------------------------------------
-    ('salario_real', 'mes', date(2026, 4, 1), 1.1, '', 'interanual, empleo registrado privado — Min. Capital Humano/INDEC', 'up'),
-    ('empleo_informal', 'mes', date(2025, 1, 1), 42.0, '', '1er trimestre — INDEC (EPH)', 'flat'),
-    ('empleo_informal', 'mes', date(2025, 10, 1), 43.0, '', '4to trimestre', 'up'),
-    ('empleo_informal', 'mes', date(2026, 1, 1), 44.2, '', '1er trimestre, +2,2pp interanual — INDEC (EPH)', 'up'),
+    # Actualización de los últimos 3 años (sep-2023 a sep-2026), a pedido
+    # explícito. De paso corrige un problema real que encontró la
+    # investigación: los 3 puntos de empleo_informal que había cargado
+    # antes en 2025-2026 (42,0 / 43,0 / 44,2) en realidad medían la "tasa
+    # de informalidad general" de INDEC (asalariados + cuentapropistas
+    # informales) — una métrica DISTINTA a la que define este indicador
+    # ("asalariados sin descuento jubilatorio", ver METODOLOGIAS en
+    # seed_pulso_austral.py) y a la que usan todos los puntos históricos
+    # 2015-2023 ya cargados. Quedaban mezcladas dos series distintas en
+    # el mismo indicador, lo que rompía la comparación de tendencia. Se
+    # reemplazan por la serie correcta en las mismas fechas (el upsert
+    # por indicador+fecha+granularidad las pisa solas). Mismo criterio
+    # para salario_real: se estandariza en la variación del índice de
+    # salarios "nivel general" (nominal vs. IPC, ambos interanuales),
+    # que es la que describe la metodología del indicador — se excluyen
+    # a propósito dos puntos que la investigación encontró (ene y
+    # mar-2026) por estar medidos en base a "salarios registrados"
+    # (excluye informales), una serie distinta que hubiera generado un
+    # quiebre artificial en la tendencia.
+    ('salario_real', 'mes', date(2023, 11, 1), -6.4, '', 'nov-2023, nominal +144,3% vs IPC +160,9% — INDEC/Infobae', 'flat'),
+    ('salario_real', 'mes', date(2024, 1, 1), -20.7, '', 'ene-2024, nominal +181,0% vs IPC +254,2% — INDEC/Infobae', 'down'),
+    ('salario_real', 'mes', date(2024, 5, 1), -16.0, '', 'may-2024, nominal +216,0% vs IPC +276,4% — INDEC/Cronista', 'up'),
+    ('salario_real', 'mes', date(2024, 7, 1), -15.7, '', 'jul-2024, nominal +206,2% vs IPC +263,4% — INDEC', 'up'),
+    ('salario_real', 'mes', date(2024, 8, 1), -10.7, '', 'ago-2024, nominal +200,6% vs IPC +236,7% — INDEC/iProfesional', 'up'),
+    ('salario_real', 'mes', date(2024, 9, 1), -8.8, '', 'sep-2024, nominal +181,9% vs IPC +209,0% — INDEC/La Nación', 'up'),
+    ('salario_real', 'mes', date(2024, 12, 1), 12.7, '', 'dic-2024, nominal +145,5% vs IPC +117,8% — primer mes que le gana a la inflación', 'up'),
+    ('salario_real', 'mes', date(2025, 1, 1), 17.6, '', 'ene-2025, nominal +117,0% vs IPC +84,5% — INDEC', 'up'),
+    ('salario_real', 'mes', date(2025, 9, 1), 10.8, '', 'sep-2025, nominal +46,0% vs IPC +31,8% — INDEC', 'down'),
+    ('salario_real', 'mes', date(2025, 12, 1), 5.1, '', 'dic-2025, nominal +38,2% vs IPC +31,5% — INDEC', 'down'),
+    ('salario_real', 'mes', date(2026, 4, 1), 3.4, '', 'abr-2026, nivel general, nominal +36,9% vs IPC +32,4% — INDEC/Cronista', 'down'),
+    ('salario_real', 'mes', date(2026, 6, 1), 1.6, '', 'jun-2026, nominal +35,7% vs IPC ~33,55% (Trading Economics) — INDEC', 'down'),
+    ('empleo_informal', 'mes', date(2023, 1, 1), 36.7, '', '1er trim. 2023, asalariados sin descuento jubilatorio — INDEC (EPH)', 'flat'),
+    ('empleo_informal', 'mes', date(2023, 4, 1), 36.8, '', '2do trim. 2023, asalariados sin descuento jubilatorio — INDEC (EPH)', 'up'),
+    ('empleo_informal', 'mes', date(2023, 7, 1), 36.7, '', '3er trim. 2023, asalariados sin descuento jubilatorio — INDEC (EPH)', 'down'),
+    ('empleo_informal', 'mes', date(2024, 1, 1), 35.7, '', '1er trim. 2024, asalariados sin descuento jubilatorio — INDEC (EPH)', 'down'),
+    ('empleo_informal', 'mes', date(2024, 4, 1), 36.4, '', '2do trim. 2024, asalariados sin descuento jubilatorio — INDEC (EPH)', 'up'),
+    ('empleo_informal', 'mes', date(2024, 7, 1), 36.7, '', '3er trim. 2024, asalariados sin descuento jubilatorio — INDEC (EPH)', 'up'),
+    ('empleo_informal', 'mes', date(2024, 10, 1), 36.1, '', '4to trim. 2024, -0,6pp vs. trim. anterior — INDEC (EPH)', 'down'),
+    ('empleo_informal', 'mes', date(2025, 1, 1), 36.3, '', '1er trim. 2025, asalariados sin descuento jubilatorio — INDEC (EPH)', 'up'),
+    ('empleo_informal', 'mes', date(2025, 4, 1), 37.7, '', '2do trim. 2025, +1,4pp vs. trim. anterior — INDEC (EPH)', 'up'),
+    ('empleo_informal', 'mes', date(2025, 7, 1), 36.7, '', '3er trim. 2025, -1,0pp vs. trim. anterior — INDEC (EPH)', 'down'),
+    ('empleo_informal', 'mes', date(2025, 10, 1), 36.3, '', '4to trim. 2025, -0,4pp vs. trim. anterior — INDEC (EPH)', 'down'),
+    ('empleo_informal', 'mes', date(2026, 1, 1), 37.9, '', '1er trim. 2026, +1,6pp vs. trim. anterior — INDEC (EPH)', 'up'),
+    ('canasta_basica', 'mes', date(2024, 1, 1), 596823, '', 'familia tipo, ene-2024, +20,4% en el mes — INDEC', 'up'),
+    ('canasta_basica', 'mes', date(2024, 2, 1), 690901.57, '', 'familia tipo, feb-2024, +15,8% en el mes — INDEC', 'up'),
+    ('canasta_basica', 'mes', date(2024, 3, 1), 773385.10, '', 'familia tipo, mar-2024, +11,9% en el mes — INDEC', 'up'),
+    ('canasta_basica', 'mes', date(2024, 5, 1), 851351, '', 'familia tipo, may-2024 (fecha inferida por consistencia) — INDEC', 'up'),
+    ('canasta_basica', 'mes', date(2024, 6, 1), 873169, '', 'familia tipo, jun-2024 — INDEC', 'up'),
+    ('canasta_basica', 'mes', date(2024, 7, 1), 900648, '', 'familia tipo, jul-2024, +263,4% interanual — INDEC', 'up'),
+    ('canasta_basica', 'mes', date(2024, 8, 1), 939887, '', 'familia tipo, ago-2024 — INDEC', 'up'),
+    ('canasta_basica', 'mes', date(2024, 9, 1), 964620, '', 'familia tipo, sep-2024, +2,6% en el mes — INDEC', 'up'),
+    ('canasta_basica', 'mes', date(2024, 10, 1), 986586, '', 'familia tipo, oct-2024, +2,3% en el mes — INDEC', 'up'),
+    ('canasta_basica', 'mes', date(2024, 11, 1), 1001466, '', 'familia tipo, nov-2024, superó el millón por primera vez — INDEC', 'up'),
+    ('canasta_basica', 'mes', date(2024, 12, 1), 1024435, '', 'familia tipo, dic-2024, +106,6% interanual — INDEC', 'up'),
+    ('canasta_basica', 'mes', date(2025, 1, 1), 1033716, '', 'familia tipo, ene-2025, +0,9% en el mes — INDEC', 'up'),
+    ('canasta_basica', 'mes', date(2025, 2, 1), 1057923, '', 'familia tipo, feb-2025, +53,1% interanual — INDEC', 'up'),
+    ('canasta_basica', 'mes', date(2025, 3, 1), 1100267, '', 'familia tipo, mar-2025, +4% en el mes — INDEC', 'up'),
+    ('canasta_basica', 'mes', date(2025, 4, 1), 1110063, '', 'familia tipo, abr-2025, +0,9% en el mes — INDEC', 'up'),
     ('canasta_basica', 'mes', date(2025, 6, 1), 1128398, '', 'familia tipo — INDEC', 'flat'),
+    ('canasta_basica', 'mes', date(2025, 7, 1), 1149353, '', 'familia tipo, jul-2025, +27,6% interanual — INDEC', 'up'),
+    ('canasta_basica', 'mes', date(2025, 8, 1), 1160780, '', 'familia tipo, ago-2025 — INDEC', 'up'),
+    ('canasta_basica', 'mes', date(2025, 9, 1), 1176852, '', 'familia tipo, sep-2025 — INDEC', 'up'),
+    ('canasta_basica', 'mes', date(2025, 10, 1), 1213799, '', 'familia tipo, oct-2025 — INDEC', 'up'),
+    ('canasta_basica', 'mes', date(2025, 11, 1), 1257329.03, '', 'familia tipo, nov-2025 (GBA) — INDEC', 'up'),
+    ('canasta_basica', 'mes', date(2025, 12, 1), 1308713, '', 'familia tipo, dic-2025 — INDEC', 'up'),
+    ('canasta_basica', 'mes', date(2026, 2, 1), 1397672, '', 'familia tipo, feb-2026 — INDEC', 'up'),
+    ('canasta_basica', 'mes', date(2026, 3, 1), 1434464, '', 'familia tipo, mar-2026 — INDEC', 'up'),
+    ('canasta_basica', 'mes', date(2026, 4, 1), 1469768, '', 'familia tipo, abr-2026 — INDEC', 'up'),
+    ('canasta_basica', 'mes', date(2026, 5, 1), 1498741, '', 'familia tipo, may-2026, +2% en el mes — INDEC', 'up'),
     ('canasta_basica', 'mes', date(2026, 7, 1), 1564716, '', '+36,1% interanual — INDEC, jul-2026', 'up'),
     # -- pobreza ------------------------------------------------------------
     ('tasa_pobreza', 'mes', date(2024, 1, 1), 52.9, '', '1er semestre, pico post-devaluación — INDEC (EPH)', 'flat'),
@@ -113,6 +177,7 @@ PUNTOS: list[tuple[str, str, date, float | None, str, str, str]] = [
     ('deuda_externa', 'mes', date(2025, 9, 1), 316.935, '', '3er trimestre — BCRA', 'up'),
     # -- educacion --------------------------------------------------------
     ('resultados_pisa', 'anio', date(2022, 1, 1), 378, '', '66° de 81 países en Matemática — OCDE, PISA 2022', 'flat'),
+    ('resultados_pisa', 'anio', date(2025, 1, 1), 367, '', '367 pts, mínimo histórico, puesto 75/91 — OCDE=482, solo 24% supera nivel básico', 'down'),
     ('gasto_educativo', 'anio', date(2024, 1, 1), 0.88, '', 'Estado nacional, sin provincias', 'flat'),
     ('gasto_educativo', 'anio', date(2025, 1, 1), 0.73, '', 'mínimo de los últimos 20 años', 'down'),
     ('gasto_educativo', 'anio', date(2026, 1, 1), 0.75, '', 'Argentinos por la Educación, presupuesto 2026', 'up'),

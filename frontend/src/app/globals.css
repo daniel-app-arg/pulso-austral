@@ -569,6 +569,33 @@ a.pa-noticia-fuente:hover {
   max-width: 720px;
 }
 
+.pa-acerca {
+  max-width: 720px;
+  margin: 20px auto 0 auto;
+  padding: 16px 20px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: white;
+}
+.pa-acerca-titulo {
+  font-family: 'Fraunces', serif;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--ink);
+  margin-bottom: 10px;
+}
+.pa-acerca-lista {
+  margin: 0;
+  padding-left: 18px;
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--ink-soft);
+}
+.pa-acerca-lista li { margin-bottom: 10px; }
+.pa-acerca-lista li:last-child { margin-bottom: 0; }
+.pa-acerca-lista b { color: var(--ink); }
+.pa-acerca-lista a { color: var(--teal); text-decoration: underline; }
+
 /* ---- Medios ---- */
 .pa-medios-grid {
   max-width: 980px;
