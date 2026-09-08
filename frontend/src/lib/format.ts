@@ -18,8 +18,8 @@ export function fechaCorta(fechaISO: string): string {
 }
 
 export function fechaLarga(fechaISO: string): string {
-  const [, m, d] = fechaISO.split('-').map(Number);
-  return `${d} de ${MESES[m - 1]}`;
+  const [y, m, d] = fechaISO.split('-').map(Number);
+  return `${d} de ${MESES[m - 1]} de ${y}`;
 }
 
 export function etiquetaDesdeFecha(fechaISO: string, granularidad: 'dia' | 'semana' | 'mes' | 'anio'): string {

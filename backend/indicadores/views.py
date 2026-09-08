@@ -1,4 +1,3 @@
-from collections import Counter
 from datetime import date
 from decimal import Decimal, InvalidOperation
 
@@ -11,6 +10,7 @@ from rest_framework.views import APIView
 
 from .models import Categoria, EventoTimeline, Fuente, Gobierno, Indicador, IndicadorValor, Medio, Noticia, PulsoIndexSnapshot
 from .services import pulso_index
+from .services import resumen
 from .serializers import (
     CategoriaSerializer,
     EventoTimelineSerializer,
@@ -172,89 +172,6 @@ class GobiernoViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = GobiernoSerializer
 
 
-def _resumir_indicador(indicador, desde, hasta):
-    """Resume un indicador dentro de [desde, hasta]: valor al inicio, valor
-    al final, variación y promedio. Si el indicador tiene puntos en más de
-    una granularidad dentro del rango, usa la que tenga más puntos (la más
-    "nativa" para ese período) en vez de mezclarlas."""
-    valores = list(IndicadorValor.objects.filter(indicador=indicador, fecha__gte=desde, fecha__lte=hasta))
-    base = {
-        'id': indicador.id,
-        'nombre': indicador.nombre,
-        'categoria_id': indicador.categoria_id,
-        'tipo': indicador.tipo,
-        'unidad': indicador.unidad,
-        'polaridad': indicador.polaridad,
-        'fuente': {'nombre': indicador.fuente.nombre, 'url': indicador.fuente.url} if indicador.fuente else None,
-    }
-    if not valores:
-        return {**base, 'sin_datos': True}
-
-    granularidad = Counter(v.granularidad for v in valores).most_common(1)[0][0]
-    puntos = sorted((v for v in valores if v.granularidad == granularidad), key=lambda v: v.fecha)
-    inicio, fin = puntos[0], puntos[-1]
-
-    if indicador.tipo == 'cualitativo':
-        return {
-            **base, 'sin_datos': False,
-            'valor_inicio': inicio.valor_texto, 'valor_fin': fin.valor_texto,
-            'variacion_abs': None, 'variacion_pct': None, 'promedio': None,
-            'fecha_inicio': inicio.fecha, 'fecha_fin': fin.fecha, 'cantidad_puntos': len(puntos),
-        }
-
-    v_inicio, v_fin = inicio.valor_numerico, fin.valor_numerico
-    numericos = [p.valor_numerico for p in puntos if p.valor_numerico is not None]
-    promedio = (sum(numericos) / len(numericos)) if numericos else None
-    variacion_abs = (v_fin - v_inicio) if (v_fin is not None and v_inicio is not None) else None
-    # El % de variación solo tiene sentido con una base positiva: si el
-    # valor inicial es negativo o cero (ej. resultado fiscal en déficit,
-    # EMAE interanual negativo), dividir por él da un número que invierte
-    # el signo de forma contraintuitiva (ej. de -1.8 a 0.3 "parece" una
-    # baja de -116%). En esos casos se omite y queda solo la variación
-    # absoluta, que sigue siendo válida.
-    variacion_pct = (variacion_abs / v_inicio * 100) if (variacion_abs is not None and v_inicio and v_inicio > 0) else None
-
-    # Misma metodología que el índice general (services/pulso_index.py):
-    # solo los indicadores con polaridad definida entran en "mejora" o
-    # "empeora" — dólar, Merval, gasto militar, etc. quedan afuera del
-    # cómputo agregado por la misma razón (no hay consenso sobre qué
-    # dirección es "mejor"), aunque igual se muestran en la tabla.
-    direccion = None
-    if variacion_abs is not None and indicador.polaridad in ('positivo', 'negativo'):
-        if variacion_abs == 0:
-            direccion = 'sin_cambio'
-        else:
-            mejora = (variacion_abs > 0) == (indicador.polaridad == 'positivo')
-            direccion = 'mejora' if mejora else 'empeora'
-
-    return {
-        **base, 'sin_datos': False,
-        'valor_inicio': v_inicio, 'valor_fin': v_fin,
-        'variacion_abs': variacion_abs, 'variacion_pct': variacion_pct, 'promedio': promedio,
-        'fecha_inicio': inicio.fecha, 'fecha_fin': fin.fecha, 'cantidad_puntos': len(puntos),
-        'direccion': direccion,
-    }
-
-
-def _indice_general_gobierno(resumen: list[dict]) -> dict:
-    """Mismo índice de difusión que el Pulso Index general (ver
-    services/pulso_index.py: score = 50 + 50×(mejora-empeora)/total), pero
-    calculado sobre el "al inicio → al final" de ESTE gobierno en vez de
-    la última foto del país — responde "¿este gobierno dejó más
-    indicadores mejor o peor de como los encontró?", con los mismos
-    indicadores e igual criterio de exclusión (dólar, Merval, gasto
-    militar, aprobación de gobierno, etc. quedan afuera, no por olvido)."""
-    mejorando = sum(1 for r in resumen if r.get('direccion') == 'mejora')
-    empeorando = sum(1 for r in resumen if r.get('direccion') == 'empeora')
-    sin_cambio = sum(1 for r in resumen if r.get('direccion') == 'sin_cambio')
-    total = mejorando + empeorando + sin_cambio
-    score = 50 + 50 * (mejorando - empeorando) / total if total else None
-    return {
-        'score': round(score, 1) if score is not None else None,
-        'mejorando': mejorando, 'empeorando': empeorando, 'sin_cambio': sin_cambio, 'total': total,
-    }
-
-
 class GobiernoResumenView(APIView):
     """Resumen de todos los indicadores durante el período de un gobierno:
     valor al inicio del mandato, valor al final (o a hoy si sigue en
@@ -269,29 +186,34 @@ class GobiernoResumenView(APIView):
         desde = gobierno.fecha_inicio
         hasta = gobierno.fecha_fin or date.today()
 
-        indicadores = Indicador.objects.select_related('categoria', 'fuente').order_by('categoria__orden', 'orden')
-        resumen = [_resumir_indicador(ind, desde, hasta) for ind in indicadores]
-
+        data = resumen.resumen_rango(desde, hasta)
         return Response({
             'gobierno': GobiernoSerializer(gobierno).data,
-            'desde': desde,
-            'hasta': hasta,
-            'indice_general': _indice_general_gobierno(resumen),
-            'indicadores': resumen,
+            'desde': data['desde'],
+            'hasta': data['hasta'],
+            'indice_general': data['indice_general'],
+            'indicadores': data['indicadores'],
         })
 
 
 class PulsoIndexView(APIView):
-    """El índice general (ver services/pulso_index.py): el score de la
-    última foto guardada (con su tendencia contra la foto anterior — así
-    se responde "¿el índice mismo está mejorando o empeorando?", no solo
-    "¿cuántos indicadores mejoran hoy?"), el historial reciente para un
-    sparkline, y el detalle en vivo (siempre recalculado, para que la
-    lista de qué entra y en qué dirección nunca quede desactualizada
-    aunque la foto guardada sea de otro día)."""
+    """El índice general — DOS números (ver services/pulso_index.py):
+
+    - `corto_plazo`: últimos 30 días, con el score de la última foto
+      guardada (con su tendencia contra la foto anterior — así se
+      responde "¿el índice mismo está mejorando o empeorando?", no solo
+      "¿cuántos indicadores mejoran en la ventana?"), historial reciente
+      para un sparkline, y detalle en vivo (siempre recalculado, para que
+      la lista de qué entra y en qué dirección nunca quede desactualizada
+      aunque la foto guardada sea de otro día).
+    - `mandato`: desde que asumió el gobierno en curso hasta hoy, siempre
+      en vivo (no tiene foto propia — es barato de calcular y con el
+      mandato en curso este número se sigue moviendo con cada dato
+      nuevo, a diferencia del mismo cálculo ya cerrado para un gobierno
+      anterior, que da un valor fijo — ver GobiernoResumenView)."""
 
     def get(self, request):
-        detalle_actual = pulso_index.calcular()
+        corto_plazo_actual = pulso_index.calcular_ultimos_30_dias()
         snapshots = list(PulsoIndexSnapshot.objects.order_by('-fecha')[:30])
 
         if snapshots:
@@ -310,17 +232,22 @@ class PulsoIndexView(APIView):
             # Todavía no se corrió compute_pulso_index para hoy: se
             # devuelve el cálculo en vivo, sin historial ni tendencia
             # propia (no hay una foto anterior con la que comparar).
-            score, fecha = detalle_actual['score'], date.today()
+            score, fecha = corto_plazo_actual['score'], date.today()
             mejorando, empeorando, sin_cambio, total = (
-                detalle_actual['mejorando'], detalle_actual['empeorando'],
-                detalle_actual['sin_cambio'], detalle_actual['total'],
+                corto_plazo_actual['mejorando'], corto_plazo_actual['empeorando'],
+                corto_plazo_actual['sin_cambio'], corto_plazo_actual['total'],
             )
             trend = delta = None
             historial = []
 
+        mandato = pulso_index.calcular_mandato_actual()
+
         return Response({
-            'score': score, 'fecha': fecha, 'trend': trend, 'delta': delta,
-            'mejorando': mejorando, 'empeorando': empeorando, 'sin_cambio': sin_cambio, 'total': total,
-            'historial': historial,
-            'detalle': detalle_actual['detalle'],
+            'corto_plazo': {
+                'score': score, 'fecha': fecha, 'trend': trend, 'delta': delta,
+                'mejorando': mejorando, 'empeorando': empeorando, 'sin_cambio': sin_cambio, 'total': total,
+                'historial': historial,
+                'detalle': corto_plazo_actual['detalle'],
+            },
+            'mandato': mandato,
         })

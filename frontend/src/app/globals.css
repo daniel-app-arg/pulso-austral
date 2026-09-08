@@ -303,7 +303,7 @@ body {
 .pa-timeline-fecha {
   font-size: 12px;
   color: var(--ink-soft);
-  min-width: 42px;
+  min-width: 68px;
 }
 .pa-timeline-titulo {
   font-size: 14px;
@@ -778,6 +778,39 @@ a.pa-noticia-fuente:hover {
 }
 .pa-pulso-toggle:hover { border-color: var(--estado-color, var(--ochre)); color: var(--ink); }
 
+/* ---- Índice general: layout de dos números lado a lado ---- */
+.pa-pulso-doble {
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 14px 24px;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 14px;
+}
+.pa-pulso-mitad {
+  max-width: none;
+  margin: 0;
+  padding: 0;
+  flex: 1 1 260px;
+}
+.pa-pulso-separador {
+  width: 1px;
+  align-self: stretch;
+  background: var(--line);
+}
+@media (max-width: 700px) {
+  .pa-pulso-separador { display: none; }
+}
+.pa-pulso-subtitulo {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--ink-soft);
+  display: block;
+  width: 100%;
+}
+
 .pa-pulso-detalle {
   max-width: 980px;
   margin: 0 auto;
@@ -789,6 +822,22 @@ a.pa-noticia-fuente:hover {
   line-height: 1.55;
   max-width: 720px;
   margin: 0 0 14px 0;
+}
+.pa-pulso-detalle-columnas {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 18px;
+}
+@media (min-width: 800px) {
+  .pa-pulso-detalle-columnas { grid-template-columns: 1fr 1fr; }
+}
+.pa-pulso-detalle-titulo {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--ink-soft);
+  margin-bottom: 6px;
+  font-weight: 600;
 }
 .pa-pulso-lista {
   display: grid;

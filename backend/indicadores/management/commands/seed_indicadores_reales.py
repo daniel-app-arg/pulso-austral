@@ -181,6 +181,268 @@ PUNTOS: list[tuple[str, str, date, float | None, str, str, str]] = [
     ('riesgo_pais', 'dia', date(2019, 12, 9), 872, '', 'JP Morgan (EMBI+), último día hábil del gobierno de Macri', 'flat'),
     ('riesgo_pais', 'dia', date(2019, 12, 11), 1467, '', 'JP Morgan (EMBI+), saltó en un solo día tras la asunción de Alberto Fernández', 'flat'),
     ('riesgo_pais', 'dia', date(2023, 12, 11), 1923, '', 'JP Morgan (EMBI+), asunción de Milei', 'flat'),
+
+    # -- Alberto Fernández (10-dic-2019 a 10-dic-2023) -------------------
+    # A diferencia de los puntos de transición de arriba (que sirven a DOS
+    # gobiernos y por eso se duplican en 9/11-dic), estos son específicos
+    # de la gestión de Alberto Fernández: se cargan una sola vez, fechados
+    # el 11-dic-2019 (día siguiente a su asunción) o el 9-dic-2023 (último
+    # día de su mandato), para no pisar los puntos de transición de
+    # dólar/inflación/desempleo/riesgo país ya cargados arriba en esas
+    # mismas fechas exactas. Son valores fijos — su mandato ya terminó, no
+    # necesitan un comando que los mantenga actualizados (a pedido
+    # explícito). Fuentes con reservas metodológicas quedan anotadas en el
+    # propio delta_texto en vez de mostrarse como un dato sin matices;
+    # donde no se encontró una cifra confiable (humor_social,
+    # delitos_propiedad, percepcion_inseguridad, inversion_equipamiento,
+    # confianza del consumidor/gobierno al inicio del mandato) se dejó
+    # directamente sin cargar — sigue apareciendo "sin datos" en vez de
+    # una estimación de baja confianza.
+    ('dolar_blue', 'dia', date(2019, 12, 10), 69.50, '', 'cotización venta, cierre 10-dic-2019 — Ámbito Financiero', 'flat'),
+    ('dolar_blue', 'dia', date(2023, 12, 8), 990, '', 'cotización venta, cierre 8-dic-2023 (10-dic fue domingo) — Ámbito Financiero', 'flat'),
+    ('reservas_bcra', 'mes', date(2019, 12, 11), 12.08, '', 'estimación de consultoras — el BCRA no publica "reservas netas" oficialmente (Chequeado)', 'flat'),
+    ('reservas_bcra', 'mes', date(2023, 12, 9), -11.50, '', 'estimación de consultoras, rango -10.000/-15.000 US$M según metodología (Chequeado)', 'flat'),
+    ('resultado_fiscal', 'mes', date(2019, 12, 11), -0.44, '', 'resultado 2019 con ingresos extraordinarios (sin extraordinarios: -0,96%) — Ministerio de Economía', 'flat'),
+    ('resultado_fiscal', 'mes', date(2023, 12, 9), -2.9, '', 'resultado 2023, incluye ingresos extraordinarios (sin 5G: -2,7%) — Ministerio de Economía', 'flat'),
+    ('salario_real', 'mes', date(2019, 12, 11), -8.4, '', 'estimado a partir de nominal +40,9% vs. inflación +53,8% en 2019 — INDEC', 'flat'),
+    ('salario_real', 'mes', date(2023, 12, 9), -19.6, '', 'estimado a partir de nominal +152,7% vs. inflación interanual +211,4% dic-2023 — INDEC', 'flat'),
+    ('empleo_informal', 'mes', date(2023, 12, 9), 35.7, '', '4to trimestre 2023 — INDEC (EPH); no se encontró cifra confiable para dic-2019', 'flat'),
+    ('canasta_basica', 'mes', date(2019, 12, 11), 38960.33, '', 'familia tipo, dic-2019 — INDEC', 'flat'),
+    ('canasta_basica', 'mes', date(2023, 12, 9), 495798, '', 'familia tipo, dic-2023 — INDEC', 'flat'),
+    ('tasa_pobreza', 'mes', date(2019, 12, 11), 35.5, '', '2do semestre 2019 — INDEC (EPH)', 'flat'),
+    ('tasa_pobreza', 'mes', date(2023, 12, 9), 41.7, '', '2do semestre 2023 — INDEC (EPH)', 'flat'),
+    ('tasa_indigencia', 'mes', date(2019, 12, 11), 8.0, '', '2do semestre 2019 — INDEC (EPH)', 'flat'),
+    ('tasa_indigencia', 'mes', date(2023, 12, 9), 11.9, '', '2do semestre 2023 — INDEC (EPH)', 'flat'),
+    ('gini', 'mes', date(2019, 12, 11), 0.439, '', '4to trimestre 2019 — INDEC (EPH)', 'flat'),
+    ('gini', 'mes', date(2023, 12, 9), 0.435, '', '4to trimestre 2023 — INDEC (EPH)', 'flat'),
+    ('brecha_ingresos', 'mes', date(2019, 12, 11), 16, '', 'decil 10/decil 1 (mediana), 4to trim. 2019 — INDEC (EPH)', 'flat'),
+    ('brecha_ingresos', 'mes', date(2023, 12, 9), 13, '', 'decil 10/decil 1 (mediana), 4to trim. 2023 — INDEC (EPH)', 'flat'),
+    ('ipi_manufacturero', 'mes', date(2019, 12, 11), 1.2, '', 'interanual, dic-2019 — INDEC', 'flat'),
+    ('ipi_manufacturero', 'mes', date(2023, 12, 9), -12.8, '', 'interanual, dic-2023 — INDEC', 'flat'),
+    ('capacidad_instalada', 'mes', date(2019, 12, 11), 56.9, '', 'dic-2019 — INDEC', 'flat'),
+    ('capacidad_instalada', 'mes', date(2023, 12, 9), 54.9, '', 'dic-2023 — INDEC', 'flat'),
+    ('produccion_agropecuaria', 'anio', date(2020, 6, 30), 97.6, '', 'campaña 2019/20: soja 49,6Mt + maíz 48,0Mt — Bolsa de Cereales de Buenos Aires', 'flat'),
+    ('produccion_agropecuaria', 'anio', date(2024, 7, 11), 98.0, '', 'campaña 2023/24: soja 50,5Mt (BCBA) + maíz ~47,5Mt (BCR), leve discrepancia entre bolsas', 'flat'),
+    ('cuenta_corriente', 'anio', date(2019, 12, 11), -0.9, '', 'déficit US$3.997M, año 2019 — BCRA/INDEC', 'flat'),
+    ('cuenta_corriente', 'anio', date(2023, 12, 9), -3.4, '', 'déficit ~US$20.700M, año 2023 — INDEC', 'flat'),
+    ('deuda_externa', 'mes', date(2019, 12, 11), 277.6, '', '4to trimestre 2019 — INDEC', 'flat'),
+    ('deuda_externa', 'mes', date(2023, 12, 9), 286.0, '', '4to trimestre 2023 — INDEC', 'flat'),
+    ('cpi_corrupcion', 'anio', date(2019, 12, 11), 45, '', 'Transparencia Internacional, edición 2019 (mismo valor ya atribuido al cierre de Macri)', 'flat'),
+    ('cpi_corrupcion', 'anio', date(2023, 12, 9), 37, '', 'Transparencia Internacional, edición 2023, puesto 98/180 (publicada ene-2024, antes de la de Milei)', 'flat'),
+    ('estado_derecho', 'anio', date(2019, 12, 11), 63, '', 'WJP Rule of Law Index 2019, de 126 países', 'flat'),
+    ('estado_derecho', 'anio', date(2023, 12, 9), 63, '', 'WJP Rule of Law Index 2023, de 142 países (oct-2023)', 'flat'),
+    ('gasto_publico', 'mes', date(2019, 12, 11), 43.5, '', 'año 2019 — Ministerio de Economía', 'flat'),
+    ('gasto_publico', 'mes', date(2023, 12, 9), 41.9, '', 'año 2023 (una fuente cita 40,6%, posible revisión metodológica) — Ministerio de Economía', 'flat'),
+    ('confianza_gobierno', 'mes', date(2019, 12, 11), 1.97, '', 'dic-2019, última medición de Macri — UTDT (ICG)', 'flat'),
+    ('confianza_gobierno', 'mes', date(2023, 12, 9), 2.86, '', 'dic-2023, máximo de la serie, ya con efecto transición a Milei — UTDT (ICG)', 'flat'),
+    ('esperanza_vida', 'anio', date(2019, 12, 11), 76.85, '', 'Banco Mundial, año 2019', 'flat'),
+    ('esperanza_vida', 'anio', date(2023, 12, 9), 77.4, '', 'Banco Mundial, año 2023 (dato preliminar)', 'flat'),
+    ('confianza_consumidor', 'mes', date(2023, 12, 9), 46, '', 'dic-2023, ya con efecto transición a Milei — UTDT (ICC)', 'flat'),
+    ('expectativas_inflacion', 'mes', date(2019, 12, 11), 42.2, '', 'REM-BCRA, relevamiento dic-2019, a 12 meses', 'flat'),
+    ('expectativas_inflacion', 'mes', date(2023, 12, 9), 213.0, '', 'REM-BCRA, relevamiento dic-2023, a 12 meses', 'flat'),
+    ('aprobacion_gobierno', 'mes', date(2019, 12, 11), 49, '', 'aprueba (muy buena+buena) — D\'Alessio IROL/Berensztein, dic-2019', 'flat'),
+    ('aprobacion_gobierno', 'mes', date(2023, 12, 9), 18, '', 'aprueba — Poliarquía, última semana de la gestión', 'flat'),
+    ('acuerdo_fmi', 'mes', date(2019, 12, 11), None, 'Sin programa vigente (Stand-By 2018 discontinuado de facto)',
+     'giros discontinuados desde ago-2019, tras las PASO', 'flat'),
+    ('acuerdo_fmi', 'mes', date(2023, 12, 9), None, '7ª revisión del EFF acordada a nivel de staff',
+     'aprobación formal del directorio recién el 31-ene-2024', 'flat'),
+    ('calificacion_soberana', 'mes', date(2019, 12, 11), None, 'CCC-', 'perspectiva negativa — S&P Global Ratings', 'flat'),
+    ('calificacion_soberana', 'mes', date(2023, 12, 9), None, 'CCC-', 'perspectiva negativa, sin cambios desde jun-2023 — S&P Global Ratings', 'flat'),
+    ('swap_china', 'mes', date(2019, 12, 11), None, '~US$18.500-19.000 M de línea activa',
+     'tramo efectivamente usado a esa fecha no precisado — BCRA', 'flat'),
+    ('swap_china', 'mes', date(2023, 12, 9), None, 'US$5.000 M en uso (CNY 35.000 M)', 'tramo activado en jun-2023 — BCRA', 'flat'),
+    ('mercosur_ue', 'mes', date(2019, 12, 11), None, 'Acuerdo político alcanzado (jun-2019)',
+     'en revisión legal, pendiente de firma y ratificación — Mercosur/UE', 'flat'),
+    ('mercosur_ue', 'mes', date(2023, 12, 9), None, 'Sin cerrar', 'la cumbre de dic-2023 no logró concluir la negociación', 'flat'),
+    ('tasa_homicidios', 'anio', date(2019, 12, 11), 5.0, '', 'año 2019, mínimo desde 2001 — Ministerio de Seguridad (SNIC)', 'flat'),
+    ('tasa_homicidios', 'anio', date(2023, 12, 9), 4.4, '', 'año 2023, 2.046 víctimas — Ministerio de Seguridad (SNIC)', 'flat'),
+    ('tasa_encarcelamiento', 'anio', date(2019, 12, 11), 224, '', 'año 2019, sin comisarías (243 con comisarías) — SNEEP', 'flat'),
+    ('tasa_encarcelamiento', 'anio', date(2022, 12, 31), 227, '', 'año 2022, último dato con tasa precisa disponible — SNEEP', 'flat'),
+    ('ranking_poder_militar', 'anio', date(2020, 3, 1), 36, '', 'edición 2020 — Global Firepower Index', 'flat'),
+    ('gasto_educativo', 'anio', date(2023, 12, 9), 1.34, '', 'solo Estado nacional, sin provincias — Argentinos por la Educación', 'flat'),
+    ('tasa_analfabetismo', 'anio', date(2019, 12, 11), 1.9, '', 'Censo 2010, último dato disponible — el Censo 2022 no incluyó esta pregunta', 'flat'),
+
+    # -- Mauricio Macri (10-dic-2015 a 10-dic-2019) ------------------------
+    # Mismo criterio que la sección de Alberto Fernández de arriba: puntos
+    # fechados el 11-dic-2015 (día siguiente a su asunción) o el 9-dic-2019
+    # (último día de su mandato) para no pisar los puntos de transición
+    # compartidos ya cargados en esas fechas exactas. Varios indicadores de
+    # 2019 reutilizan EXACTAMENTE el mismo valor ya cargado para el inicio
+    # de Alberto Fernández (mismo año, mismo dato real — dos investigaciones
+    # separadas a veces encontraron cifras ligeramente distintas para el
+    # mismo hecho según la fuente consultada; se prioriza una sola cifra
+    # por consistencia en vez de cargar ambas). Donde no se encontró una
+    # cifra confiable (humor_social, delitos_propiedad, percepcion_
+    # inseguridad, ranking_poder_militar, tasa_escolarizacion, ipi_
+    # manufacturero/canasta_basica/salario_real/confianza_consumidor/
+    # expectativas_inflacion al inicio del mandato) se dejó sin cargar.
+    ('reservas_bcra', 'mes', date(2015, 12, 10), 2.4, '', 'estimación de consultoras, rango 0-2,4 US$B según metodología — Analytica/PxQ', 'flat'),
+    ('reservas_bcra', 'mes', date(2019, 12, 9), 11.5, '', 'estimación de consultoras, dic-2019 — Analytica/Outlier', 'flat'),
+    ('resultado_fiscal', 'mes', date(2015, 12, 11), -5.4, '', 'año 2015, metodología original (revisada luego a -3,8% PBI) — Min. Hacienda', 'flat'),
+    ('resultado_fiscal', 'mes', date(2019, 12, 9), -0.44, '', 'mismo resultado 2019 ya cargado para AF (sin extraordinarios: -0,96%)', 'flat'),
+    ('salario_real', 'mes', date(2019, 12, 9), -8.4, '', 'mismo dato del año 2019 ya cargado para el inicio de AF — INDEC', 'flat'),
+    ('empleo_informal', 'mes', date(2015, 12, 31), 33.4, '', '4to trim. 2015, INDEC advierte reservas metodológicas — emergencia estadística', 'flat'),
+    ('empleo_informal', 'mes', date(2019, 12, 9), 31.5, '', 'promedio anual 2019, trimestre exacto no precisado — INDEC (EPH)', 'flat'),
+    ('canasta_basica', 'mes', date(2019, 12, 9), 38960, '', 'mismo dato de dic-2019 ya cargado para el inicio de AF — INDEC', 'flat'),
+    ('tasa_pobreza', 'mes', date(2016, 12, 31), 30.3, '', '2do semestre 2016, primer dato tras el corte de la serie 2013-2016 — INDEC', 'flat'),
+    ('tasa_pobreza', 'mes', date(2019, 12, 9), 35.5, '', 'mismo dato de 2019 ya cargado para el inicio de AF — INDEC (EPH)', 'flat'),
+    ('tasa_indigencia', 'mes', date(2016, 12, 31), 6.1, '', '2do semestre 2016, primer dato tras el corte de la serie — INDEC', 'flat'),
+    ('tasa_indigencia', 'mes', date(2019, 12, 9), 8.0, '', 'mismo dato de 2019 ya cargado para el inicio de AF — INDEC (EPH)', 'flat'),
+    ('gini', 'mes', date(2016, 12, 31), 0.428, '', '4to trim. 2016, dato más cercano tras el corte de la serie — INDEC (EPH)', 'flat'),
+    ('gini', 'mes', date(2019, 12, 9), 0.439, '', 'mismo dato de 2019 ya cargado para el inicio de AF — INDEC (EPH)', 'flat'),
+    ('brecha_ingresos', 'mes', date(2016, 12, 31), 14, '', 'decil 10/decil 1 (mediana), 4to trim. 2016, más cercano al corte — INDEC (EPH)', 'flat'),
+    ('brecha_ingresos', 'mes', date(2019, 12, 9), 16, '', 'mismo dato de 2019 ya cargado para el inicio de AF — INDEC (EPH)', 'flat'),
+    ('ipi_manufacturero', 'mes', date(2019, 12, 9), 1.2, '', 'mismo dato de dic-2019 ya cargado para el inicio de AF — INDEC', 'flat'),
+    ('capacidad_instalada', 'mes', date(2015, 12, 11), 71.4, '', 'oct-2015, INDEC no publicó nov/dic-2015 por la emergencia estadística', 'flat'),
+    ('capacidad_instalada', 'mes', date(2019, 12, 9), 56.9, '', 'mismo dato de dic-2019 ya cargado para el inicio de AF — INDEC', 'flat'),
+    ('produccion_agropecuaria', 'anio', date(2016, 6, 30), 84.8, '', 'campaña 2015/16: soja ~55,3Mt + maíz ~29,5Mt — Bolsa de Cereales/Rosario', 'flat'),
+    ('cuenta_corriente', 'anio', date(2015, 12, 11), -2.96, '', 'año 2015 — Banco Mundial (BN.CAB.XOKA.GD.ZS)', 'flat'),
+    ('cuenta_corriente', 'anio', date(2019, 12, 9), -0.9, '', 'mismo dato de 2019 ya cargado para el inicio de AF — BCRA/INDEC', 'flat'),
+    ('deuda_externa', 'mes', date(2015, 12, 11), 170.4, '', 'IV trimestre 2015 — BCRA/INDEC', 'flat'),
+    ('deuda_externa', 'mes', date(2019, 12, 9), 277.6, '', 'mismo dato de dic-2019 ya cargado para el inicio de AF — INDEC', 'flat'),
+    ('cpi_corrupcion', 'anio', date(2015, 12, 11), 32, '', 'Transparencia Internacional, edición 2015', 'flat'),
+    ('estado_derecho', 'anio', date(2015, 12, 11), 51, '', 'edición 2016 (113 países), más cercana — la de 2015 no pudo confirmarse', 'flat'),
+    ('estado_derecho', 'anio', date(2019, 12, 9), 63, '', 'mismo dato de la edición 2019 ya cargado para el inicio de AF — WJP', 'flat'),
+    ('gasto_publico', 'mes', date(2015, 12, 11), 44.2, '', 'pico de la serie, año 2015 — Ministerio de Economía', 'flat'),
+    ('gasto_publico', 'mes', date(2019, 12, 9), 43.5, '', 'mismo dato de 2019 ya cargado para el inicio de AF — Ministerio de Economía', 'flat'),
+    ('confianza_gobierno', 'mes', date(2015, 12, 11), 1.80, '', 'última medición de CFK — UTDT (ICG)', 'flat'),
+    ('confianza_gobierno', 'mes', date(2019, 12, 9), 1.97, '', 'última medición de Macri, +9% vs. dic-2015 — UTDT (ICG)', 'flat'),
+    ('esperanza_vida', 'anio', date(2015, 12, 11), 76.6, '', 'año 2015 — Banco Mundial (SP.DYN.LE00.IN)', 'flat'),
+    ('esperanza_vida', 'anio', date(2019, 12, 9), 76.85, '', 'mismo dato de 2019 ya cargado para el inicio de AF — Banco Mundial', 'flat'),
+    ('cobertura_salud', 'anio', date(2015, 12, 11), 68, '', 'dato más cercano disponible (2014), 2015 no confirmado — INDEC (EPH)', 'flat'),
+    ('cobertura_salud', 'anio', date(2019, 12, 9), 69.4, '', '1er trimestre 2019, obra social/prepaga/mutual — INDEC (EPH)', 'flat'),
+    ('mortalidad_infantil', 'anio', date(2015, 12, 11), 9.7, '', 'año 2015 — DEIS, Ministerio de Salud', 'flat'),
+    ('mortalidad_infantil', 'anio', date(2019, 12, 9), 9.2, '', 'año 2019, sube desde 8,8‰ en 2018 — DEIS, Ministerio de Salud', 'flat'),
+    ('acceso_servicios', 'anio', date(2015, 12, 11), 53.8, '', 'cloacas, Censo 2010, mismo dato ya cargado en otros períodos — INDEC', 'flat'),
+    ('acceso_servicios', 'anio', date(2019, 12, 9), 66.7, '', 'cloacas, 1er semestre 2019 — INDEC (EPH)', 'flat'),
+    ('confianza_consumidor', 'mes', date(2015, 12, 11), 46.4, '', 'dic-2015 — UTDT (ICC)', 'flat'),
+    ('expectativas_inflacion', 'mes', date(2019, 12, 9), 41.7, '', 'REM-BCRA, relevamiento dic-2019, a 12 meses', 'flat'),
+    ('aprobacion_gobierno', 'mes', date(2015, 12, 11), 62.5, '', 'aprueba (muy buena+buena), 1ra encuesta post-asunción — Opinión Pública SyM', 'flat'),
+    ('aprobacion_gobierno', 'mes', date(2019, 12, 9), 39, '', 'aprueba, encuestadora exacta no identificada con certeza — dic-2019', 'flat'),
+    ('tasa_homicidios', 'anio', date(2015, 12, 11), 6.6, '', 'año 2015 — Ministerio de Seguridad (SNIC)', 'flat'),
+    ('tasa_homicidios', 'anio', date(2019, 12, 9), 5.0, '', 'mismo dato de 2019 ya cargado para el inicio de AF — Min. Seguridad', 'flat'),
+    ('tasa_encarcelamiento', 'anio', date(2015, 12, 11), 166, '', 'año 2015 — SNEEP', 'flat'),
+    ('tasa_encarcelamiento', 'anio', date(2019, 12, 9), 224, '', 'mismo dato de 2019 ya cargado para el inicio de AF — SNEEP', 'flat'),
+    ('gasto_defensa', 'anio', date(2015, 12, 11), 0.9, '', 'año 2015 — SIPRI Military Expenditure Database', 'flat'),
+    ('gasto_defensa', 'anio', date(2019, 12, 9), 0.71, '', 'año 2019, valor más bajo en 60 años — SIPRI', 'flat'),
+    ('inversion_equipamiento', 'anio', date(2019, 12, 9), 1.4, '', 'Bienes de Uso, % del presupuesto de Defensa, mínimo de la serie', 'flat'),
+    ('resultados_pisa', 'anio', date(2018, 12, 1), 379, '', 'PISA 2018, edición más cercana a 2019 (es trienal) — OCDE, media=489', 'flat'),
+    ('gasto_educativo', 'anio', date(2015, 12, 11), 1.59, '', 'Estado nacional, sin provincias, confianza moderada — Argentinos x la Educación', 'flat'),
+    ('gasto_educativo', 'anio', date(2019, 12, 9), 1.08, '', 'Estado nacional, mínimo de la serie, confianza moderada — Argentinos x Educación', 'flat'),
+    ('acuerdo_fmi', 'mes', date(2015, 12, 11), None, 'Sin programa vigente', 'sin acuerdo con el FMI desde 2004-2006', 'flat'),
+    ('acuerdo_fmi', 'mes', date(2019, 12, 9), None, 'Stand-By Agreement (de facto discontinuado)',
+     'giros discontinuados desde ago-2019, tras las PASO — SBA jun-2018', 'flat'),
+    ('calificacion_soberana', 'mes', date(2015, 12, 11), None, 'CCC+', 'perspectiva estable — S&P Global Ratings', 'flat'),
+    ('calificacion_soberana', 'mes', date(2019, 12, 9), None, 'CCC-', 'S&P Global Ratings, mismo valor ya cargado para el inicio de AF', 'flat'),
+    ('swap_china', 'mes', date(2015, 12, 11), None, 'Swap por 70.000 M yuanes (2do acuerdo, 2014)',
+     'segundo acuerdo (2014), ~US$3.100M convertidos a dic-2015 — BCRA', 'flat'),
+    ('swap_china', 'mes', date(2019, 12, 9), None, '~US$18.500-19.000 M de línea activa',
+     'mismo valor ya cargado para el inicio de AF (130.000M yuanes) — BCRA', 'flat'),
+    ('mercosur_ue', 'mes', date(2015, 12, 11), None, 'En negociación, sin acuerdo',
+     'negociaciones reanudadas 2013, sin cierre a dic-2015 — Mercosur/UE', 'flat'),
+    ('mercosur_ue', 'mes', date(2019, 12, 9), None, 'Acuerdo político alcanzado (jun-2019)',
+     'mismo valor ya cargado para el inicio de AF — Mercosur/UE', 'flat'),
+
+    # -- Cristina Fernández de Kirchner, 1er y 2do mandato ------------------
+    # CFK1: 10-dic-2007 a 10-dic-2011. CFK2: 10-dic-2011 a 10-dic-2015 —
+    # dos gobiernos separados en el modelo (misma persona, reelección), así
+    # que se cargan como tal. A diferencia de las secciones anteriores, acá
+    # el límite entre CFK1 y CFK2 es el mismo día para la misma persona (no
+    # hay "entrante" ni "saliente" distintos) así que un solo punto fechado
+    # 10-dic-2011 sirve de cierre de CFK1 e inicio de CFK2 sin necesidad de
+    # duplicarlo en 9/11-dic. El límite CFK2/Macri sí es una transición de
+    # persona — sigue el mismo criterio 9/11-dic que el resto del archivo,
+    # y varios valores de dic-2015 reutilizan el mismo dato ya cargado para
+    # el inicio de Macri más arriba, por la razón ya explicada ahí.
+    # Esta es la era de mayor incertidumbre de datos del sitio: el INDEC
+    # estuvo intervenido/cuestionado 2007-2015 (inflación y pobreza son los
+    # casos más conocidos), varias series recién arrancaron después (REM
+    # del BCRA en 2016, WJP Rule of Law Index con cobertura confiable desde
+    # 2015, Global Firepower sin archivo histórico público) y varias otras
+    # quedaron discontinuadas en el corte 2013-2016 (pobreza/indigencia).
+    # Donde la investigación no encontró una cifra confiable o encontró
+    # cifras contradictorias entre fuentes sin forma de resolverlas
+    # (salario_real, canasta_basica, brecha_ingresos, delitos_propiedad,
+    # percepcion_inseguridad, humor_social, expectativas_inflacion,
+    # inversion_equipamiento, ranking_poder_militar, calificacion_soberana
+    # 2007/2011, confianza_gobierno 2007/2011, cobertura_salud 2007/2011,
+    # gasto_publico 2007/2011, estado_derecho, efectivos_ffaa 2007/2011,
+    # gasto_defensa 2007/2011) se dejó sin cargar en vez de forzar un dato.
+    ('reservas_bcra', 'mes', date(2007, 12, 11), 45.6, '', 'reservas brutas (no hay serie de netas para esta época) — Chequeado', 'flat'),
+    ('reservas_bcra', 'mes', date(2011, 12, 10), 46.376, '', 'reservas brutas — BCRA, Informe Monetario Mensual dic-2011', 'flat'),
+    ('reservas_bcra', 'mes', date(2015, 12, 9), 25.6, '', 'reservas brutas, aprox. 10-dic-2015 — Chequeado', 'flat'),
+    ('resultado_fiscal', 'mes', date(2007, 12, 11), 2.9, '', 'superávit primario, año 2007 — Chequeado', 'flat'),
+    ('resultado_fiscal', 'mes', date(2011, 12, 10), 0.2, '', 'superávit primario, año 2011, último año antes del déficit — Chequeado', 'flat'),
+    ('resultado_fiscal', 'mes', date(2015, 12, 9), -5.4, '', 'mismo dato de 2015 ya cargado para el inicio de Macri — Min. Hacienda', 'flat'),
+    ('empleo_informal', 'mes', date(2015, 3, 31), 31.9, '', '1er trimestre 2015, coincide con cambio metodológico EPH — INDEC', 'flat'),
+    ('tasa_pobreza', 'mes', date(2011, 12, 10), 6.5, '', '2do semestre 2011, cifra oficial cuestionada como subestimada — INDEC', 'flat'),
+    ('tasa_indigencia', 'mes', date(2011, 12, 10), 1.7, '', '2do semestre 2011, cifra oficial cuestionada como subestimada — INDEC', 'flat'),
+    ('gini', 'mes', date(2011, 12, 10), 0.394, '', '3er trimestre 2011, dato más cercano — INDEC (EPH)', 'flat'),
+    ('ipi_manufacturero', 'mes', date(2007, 12, 11), 9.5, '', 'EMI-INDEC, dic-2007 (con estacionalidad)', 'flat'),
+    ('ipi_manufacturero', 'mes', date(2011, 12, 10), 2.2, '', 'EMI-INDEC, dic-2011 (con estacionalidad)', 'flat'),
+    ('capacidad_instalada', 'mes', date(2007, 12, 11), 74.5, '', 'INDEC, dic-2007', 'flat'),
+    ('capacidad_instalada', 'mes', date(2011, 12, 10), 82.0, '', 'INDEC, dic-2011', 'flat'),
+    ('capacidad_instalada', 'mes', date(2015, 12, 9), 71.4, '', 'mismo dato de oct-2015 ya cargado para el inicio de Macri — INDEC', 'flat'),
+    ('produccion_agropecuaria', 'anio', date(2008, 5, 31), 67.35, '', 'campaña 2007/08: soja 47,2Mt + maíz 20,2Mt — Bolsa de Comercio de Rosario', 'flat'),
+    ('produccion_agropecuaria', 'anio', date(2012, 5, 31), 59.9, '', 'campaña 2011/12: soja 40,9Mt + maíz 19,0Mt — Bolsa de Comercio de Rosario', 'flat'),
+    ('produccion_agropecuaria', 'anio', date(2015, 5, 31), 81.6, '', 'campaña 2014/15: soja 58Mt + maíz 23,6Mt — Bolsa de Comercio de Rosario', 'flat'),
+    ('balanza_comercial', 'mes', date(2007, 12, 11), 1786, '', 'superávit, dic-2007 — INDEC (Intercambio Comercial Argentino)', 'flat'),
+    ('balanza_comercial', 'mes', date(2011, 12, 10), 280, '', 'superávit, dic-2011, dato preliminar — INDEC (ICA)', 'flat'),
+    ('balanza_comercial', 'mes', date(2015, 12, 9), -1110, '', 'déficit, dic-2015, peor mes del año — INDEC (ICA)', 'flat'),
+    ('exportaciones', 'mes', date(2007, 12, 11), 5668, '', 'dic-2007 — INDEC (ICA)', 'flat'),
+    ('exportaciones', 'mes', date(2011, 12, 10), 6269, '', 'dic-2011, dato preliminar — INDEC (ICA)', 'flat'),
+    ('exportaciones', 'mes', date(2015, 12, 9), 3411, '', 'dic-2015 — INDEC (ICA)', 'flat'),
+    ('cuenta_corriente', 'anio', date(2007, 12, 11), 2.10, '', 'año 2007 — Banco Mundial (BN.CAB.XOKA.GD.ZS)', 'flat'),
+    ('cuenta_corriente', 'anio', date(2011, 12, 10), -1.01, '', 'año 2011 — Banco Mundial (BN.CAB.XOKA.GD.ZS)', 'flat'),
+    ('cuenta_corriente', 'anio', date(2015, 12, 9), -2.96, '', 'mismo dato de 2015 ya cargado para el inicio de Macri — Banco Mundial', 'flat'),
+    ('deuda_externa', 'mes', date(2007, 12, 11), 120.8, '', 'fin de 2007 — Banco Mundial (stock anual, no trimestral BCRA)', 'flat'),
+    ('deuda_externa', 'mes', date(2011, 12, 10), 142.9, '', 'fin de 2011 — Banco Mundial (BCRA reportó 136,4B a 3er trim.)', 'flat'),
+    ('deuda_externa', 'mes', date(2015, 12, 9), 170.4, '', 'mismo dato de dic-2015 ya cargado para el inicio de Macri — INDEC', 'flat'),
+    ('cpi_corrupcion', 'anio', date(2007, 12, 11), 29, '', 'Transparencia Internacional 2007, escala vieja 2,9/10, puesto 105/180', 'flat'),
+    ('cpi_corrupcion', 'anio', date(2011, 12, 10), 30, '', 'Transparencia Internacional 2011, última ed. escala 0-10, puesto 100/183', 'flat'),
+    ('gasto_publico', 'mes', date(2015, 12, 9), 44.2, '', 'mismo dato de 2015 ya cargado para el inicio de Macri — Min. Economía', 'flat'),
+    ('confianza_gobierno', 'mes', date(2015, 12, 9), 1.80, '', 'última medición de CFK, mismo dato ya cargado para Macri — UTDT (ICG)', 'flat'),
+    ('esperanza_vida', 'anio', date(2007, 12, 11), 74.78, '', 'año 2007 — Banco Mundial (SP.DYN.LE00.IN)', 'flat'),
+    ('esperanza_vida', 'anio', date(2011, 12, 10), 76.1, '', 'año 2011 — Banco Mundial (SP.DYN.LE00.IN)', 'flat'),
+    ('esperanza_vida', 'anio', date(2015, 12, 9), 76.6, '', 'mismo dato de 2015 ya cargado para el inicio de Macri — Banco Mundial', 'flat'),
+    ('cobertura_salud', 'anio', date(2015, 12, 9), 68, '', 'mismo dato (2014, más cercano) ya cargado para el inicio de Macri', 'flat'),
+    ('mortalidad_infantil', 'anio', date(2007, 12, 11), 13.3, '', 'año 2007 — DEIS, Ministerio de Salud', 'flat'),
+    ('mortalidad_infantil', 'anio', date(2011, 12, 10), 11.7, '', 'año 2011 — DEIS, Ministerio de Salud', 'flat'),
+    ('mortalidad_infantil', 'anio', date(2015, 12, 9), 9.7, '', 'mismo dato de 2015 ya cargado para el inicio de Macri — DEIS', 'flat'),
+    ('confianza_consumidor', 'mes', date(2011, 12, 10), 46.4, '', 'dic-2011, subió 8,7% en el mes — UTDT (ICC)', 'flat'),
+    ('aprobacion_gobierno', 'mes', date(2007, 12, 11), 56, '', 'imagen positiva, recién asumida — Poliarquía, dic-2007', 'flat'),
+    ('aprobacion_gobierno', 'mes', date(2011, 12, 10), 69, '', 'aprobación de gestión — Poliarquía, dic-2011', 'flat'),
+    ('tasa_homicidios', 'anio', date(2007, 12, 11), 5.0, '', 'año 2007, dato de fuente agregada, baja precisión — SNIC', 'flat'),
+    ('tasa_homicidios', 'anio', date(2015, 12, 9), 6.6, '', 'mismo dato de 2015 ya cargado para el inicio de Macri — Min. Seguridad', 'flat'),
+    ('tasa_encarcelamiento', 'anio', date(2011, 12, 10), 123, '', '2011, dato de fuente agregada sin PDF primario confirmado — SNEEP', 'flat'),
+    ('tasa_encarcelamiento', 'anio', date(2015, 12, 9), 166, '', 'mismo dato de 2015 ya cargado para el inicio de Macri — SNEEP', 'flat'),
+    ('gasto_defensa', 'anio', date(2015, 12, 9), 0.9, '', 'mismo dato de 2015 ya cargado para el inicio de Macri — SIPRI', 'flat'),
+    ('gasto_educativo', 'anio', date(2015, 12, 9), 1.59, '', 'mismo dato de 2015 ya cargado para el inicio de Macri', 'flat'),
+    ('resultados_pisa', 'anio', date(2007, 12, 11), 381, '', 'edición 2006, la más cercana a dic-2007 — OCDE', 'flat'),
+    ('resultados_pisa', 'anio', date(2011, 12, 10), 388, '', 'edición 2009, la más cercana conocida a dic-2011 — OCDE', 'flat'),
+    ('resultados_pisa', 'anio', date(2015, 12, 9), 388, '', 'edición 2012, la más cercana conocida a dic-2015 — OCDE, puesto 59/65', 'flat'),
+    ('tasa_escolarizacion', 'anio', date(2010, 10, 27), 97.6, '', 'Censo 2010, único dato censal disponible — INDEC', 'flat'),
+    ('tasa_escolarizacion', 'anio', date(2011, 12, 10), 97.6, '', 'carry-forward del Censo 2010, único dato disponible — INDEC', 'flat'),
+    ('acuerdo_fmi', 'mes', date(2007, 12, 11), None, 'Sin programa vigente', 'sin acuerdo con el FMI desde 2004-2006', 'flat'),
+    ('acuerdo_fmi', 'mes', date(2011, 12, 10), None, 'Sin programa vigente', 'confirmado sin programa vigente — FMI', 'flat'),
+    ('acuerdo_fmi', 'mes', date(2015, 12, 9), None, 'Sin programa vigente',
+     'mismo dato ya cargado para el inicio de Macri', 'flat'),
+    ('calificacion_soberana', 'mes', date(2015, 12, 9), None, 'CCC+',
+     'mismo valor ya cargado para el inicio de Macri — S&P Global Ratings', 'flat'),
+    ('swap_china', 'mes', date(2007, 12, 11), None, 'No existía swap con China',
+     'el primer swap se firmó recién en 2009', 'flat'),
+    ('swap_china', 'mes', date(2011, 12, 10), None, 'Swap 2009 vigente (RMB 70.000 M), nunca activado',
+     'acuerdo de 2009, según fuentes nunca activado antes de 2014 — BCRA', 'flat'),
+    ('swap_china', 'mes', date(2015, 12, 9), None, 'Swap por 70.000 M yuanes (2do acuerdo, 2014)',
+     'mismo valor ya cargado para el inicio de Macri — BCRA', 'flat'),
+    ('mercosur_ue', 'mes', date(2007, 12, 11), None, 'Negociaciones estancadas, sin acuerdo',
+     'negociaciones estancadas desde 2004', 'flat'),
+    ('mercosur_ue', 'mes', date(2011, 12, 10), None, 'Negociaciones reanudadas, en curso',
+     'reanudadas en 2010, 4ta ronda en curso — Comisión Europea', 'flat'),
+    ('mercosur_ue', 'mes', date(2015, 12, 9), None, 'En negociación, sin acuerdo',
+     'mismo valor ya cargado para el inicio de Macri — Mercosur/UE', 'flat'),
+    ('acceso_servicios', 'anio', date(2015, 12, 9), 53.8, '', 'cloacas, Censo 2010, carry-forward, único dato disponible — INDEC', 'flat'),
+    ('tasa_analfabetismo', 'anio', date(2015, 12, 9), 1.9, '', 'Censo 2010, carry-forward, único dato disponible — INDEC', 'flat'),
 ]
 
 

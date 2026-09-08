@@ -106,12 +106,14 @@ export interface PulsoIndexDetalleDTO {
   nombre: string;
   categoria_id: string;
   polaridad: 'positivo' | 'negativo';
-  trend: Trend;
   direccion: DireccionIndicador;
   fecha: string;
 }
 
-export interface PulsoIndexDTO {
+/** Pulso de corto plazo: últimos 30 días, con foto diaria propia (de ahí
+ * `trend`/`delta`/`historial`, comparando la foto de hoy contra la de
+ * ayer) — ver indicadores/services/pulso_index.py. */
+export interface PulsoIndexCortoPlazoDTO {
   score: number;
   fecha: string;
   trend: Trend | null;
@@ -122,6 +124,26 @@ export interface PulsoIndexDTO {
   total: number;
   historial: { fecha: string; score: number }[];
   detalle: PulsoIndexDetalleDTO[];
+}
+
+/** Desde que asumió el gobierno en curso hasta hoy — siempre en vivo, sin
+ * foto propia (se recalcula en cada request, es barato). `score: null`
+ * si por algún motivo no hay ningún gobierno cargado sin fecha_fin. */
+export interface PulsoIndexMandatoDTO {
+  score: number | null;
+  mejorando: number;
+  empeorando: number;
+  sin_cambio: number;
+  total: number;
+  desde: string;
+  hasta: string;
+  detalle: PulsoIndexDetalleDTO[];
+  gobierno: { id: string; presidente: string; fecha_inicio: string };
+}
+
+export interface PulsoIndexDTO {
+  corto_plazo: PulsoIndexCortoPlazoDTO;
+  mandato: PulsoIndexMandatoDTO | null;
 }
 
 export interface GobiernoDTO {

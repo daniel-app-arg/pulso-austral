@@ -1,7 +1,9 @@
 """
-Calcula el índice general de hoy (ver indicadores/services/pulso_index.py)
-y guarda una foto en PulsoIndexSnapshot — así queda una serie histórica
-real, no solo un número recalculado en cada request.
+Calcula el índice de "últimos 30 días" de hoy (ver
+indicadores/services/pulso_index.py — es uno de los dos números del
+índice general, el otro es "mandato actual", que se recalcula en vivo y
+no necesita foto) y guarda una foto en PulsoIndexSnapshot — así queda una
+serie histórica real, no solo un número recalculado en cada request.
 
 Pensado para correrse una vez por día, después de `fetch_datos_reales`
 (que es lo que mueve el `trend` de los indicadores reales; los
@@ -25,7 +27,7 @@ class Command(BaseCommand):
     help = 'Calcula el índice general de hoy y guarda una foto en PulsoIndexSnapshot.'
 
     def handle(self, *args, **options):
-        resultado = pulso_index.calcular()
+        resultado = pulso_index.calcular_ultimos_30_dias()
 
         if resultado['total'] == 0:
             self.stdout.write(self.style.WARNING(

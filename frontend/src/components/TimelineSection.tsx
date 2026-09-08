@@ -3,7 +3,7 @@
 import { useMemo, useState } from 'react';
 import { ChevronLeft, ChevronRight, Clock } from 'lucide-react';
 import type { EventoTimelineVM, Sentimiento } from '@/lib/types';
-import { MESES, fechaCorta, mesKey } from '@/lib/format';
+import { MESES, fechaCortaConAnio, mesKey } from '@/lib/format';
 import { TrendIcon, sentimentTrend } from './TrendIcon';
 
 function TimelineItem({ ev }: { ev: EventoTimelineVM }) {
@@ -13,7 +13,7 @@ function TimelineItem({ ev }: { ev: EventoTimelineVM }) {
         <TrendIcon trend={sentimentTrend(ev.sentimiento)} size={11} />
       </div>
       <div className="pa-timeline-content">
-        <span className="pa-timeline-fecha">{fechaCorta(ev.fecha)}</span>
+        <span className="pa-timeline-fecha">{fechaCortaConAnio(ev.fecha)}</span>
         <span className="pa-timeline-titulo">{ev.titulo}</span>
       </div>
     </div>
