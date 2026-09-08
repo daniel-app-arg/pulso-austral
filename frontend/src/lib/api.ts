@@ -38,9 +38,16 @@ const API_BASE_URL = process.env.API_BASE_URL || 'http://127.0.0.1:8000/api';
 // varias veces por día es `/destacados/` (dólar oficial, dólar blue y
 // Merval — 2 veces por día). Todo lo demás (el resto de los
 // indicadores, noticias, línea de tiempo, gobiernos) cambia mucho más
-// esporádicamente, así que se cachea una semana entera.
+// esporádicamente. Originalmente esto se cacheaba una semana entera,
+// pero el cache de fetch de Next.js en Vercel persiste ENTRE deploys
+// (no se limpia solo por subir código nuevo) — así que una carga
+// manual de datos (correr un seed) podía tardar hasta una semana en
+// verse en producción, sin forma de forzarlo desde acá sin acceso al
+// dashboard de Vercel. Se baja a 1 día como mejor punto medio: sigue
+// evitando pegarle a Django/Neon en cada visita, pero una actualización
+// de datos tarda como mucho un día en reflejarse sola.
 const REVALIDATE_DESTACADOS = 60 * 60 * 3; // 3 h — dólar/Merval, únicos que se actualizan 2x/día
-const REVALIDATE_LARGO = 60 * 60 * 24 * 7; // 1 semana — todo lo demás
+const REVALIDATE_LARGO = 60 * 60 * 24; // 1 día — todo lo demás
 
 interface Paginada<T> {
   count: number;
