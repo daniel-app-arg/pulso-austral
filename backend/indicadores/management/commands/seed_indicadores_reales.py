@@ -118,6 +118,69 @@ PUNTOS: list[tuple[str, str, date, float | None, str, str, str]] = [
     ('gasto_educativo', 'anio', date(2026, 1, 1), 0.75, '', 'Argentinos por la Educación, presupuesto 2026', 'up'),
     ('tasa_escolarizacion', 'anio', date(2022, 1, 1), 97.6, '', 'de 4 a 17 años — INDEC (Censo 2022)', 'flat'),
     ('tasa_analfabetismo', 'anio', date(2010, 1, 1), 1.9, '', 'último dato censal — el Censo 2022 no incluyó esta pregunta', 'flat'),
+    # -- históricos, transiciones de gobierno (para "Por gobierno") ------
+    # No cubre todos los indicadores ni todas las transiciones — es lo que
+    # se pudo verificar por búsqueda web en esta pasada. dólar oficial y
+    # reservas BCRA de la gestión Milei ya no necesitan puntos manuales:
+    # se amplió VENTANA_DIARIA en fetch_datos_reales.py para que la serie
+    # real del BCRA cubra desde antes de su asunción.
+    #
+    # Inflación interanual — INDEC, diciembre de cada año. El propio INDEC
+    # reconoció la intervención de las estadísticas oficiales entre 2007 y
+    # 2015: estos valores son los oficiales de la época, no una
+    # reconstrucción — se aclara en el delta porque en general se los
+    # considera subestimados (ver notas de Wikipedia/prensa económica).
+    #
+    # Cada valor de un límite de mandato se carga DOS veces (9-dic y
+    # 11-dic) para que sirva de "AL FINAL" del gobierno saliente y de "AL
+    # INICIO" del entrante — si se cargara una sola vez, Django la asigna
+    # a un solo gobierno según el rango de fechas (`fecha_inicio`/
+    # `fecha_fin` no se solapan) y el otro queda con un solo punto (0% de
+    # variación, no realmente "sin datos" pero engañoso igual).
+    ('inflacion_interanual', 'mes', date(2003, 12, 1), 3.6, '', 'INDEC, dic-2003 (inicio N. Kirchner)', 'flat'),
+    ('inflacion_interanual', 'mes', date(2007, 12, 9), 8.5, '', 'INDEC oficial, dic-2007 — cuestionado por la intervención del INDEC 2007-2015', 'flat'),
+    ('inflacion_interanual', 'mes', date(2007, 12, 11), 8.5, '', 'INDEC oficial, dic-2007 — cuestionado por la intervención del INDEC 2007-2015', 'flat'),
+    ('inflacion_interanual', 'mes', date(2011, 12, 9), 9.5, '', 'INDEC oficial, dic-2011 — consultoras privadas estimaban ~22,8%', 'flat'),
+    ('inflacion_interanual', 'mes', date(2011, 12, 11), 9.5, '', 'INDEC oficial, dic-2011 — consultoras privadas estimaban ~22,8%', 'flat'),
+    ('inflacion_interanual', 'mes', date(2015, 12, 9), 25.0, '', 'INDEC oficial, dic-2015 — último año de la intervención, cuestionado', 'flat'),
+    ('inflacion_interanual', 'mes', date(2015, 12, 11), 25.0, '', 'INDEC oficial, dic-2015 — último año de la intervención, cuestionado', 'flat'),
+    ('inflacion_interanual', 'mes', date(2019, 12, 9), 53.8, '', 'INDEC, dic-2019', 'flat'),
+    ('inflacion_interanual', 'mes', date(2019, 12, 11), 53.8, '', 'INDEC, dic-2019', 'flat'),
+    # Desempleo — INDEC (EPH), promedio o trimestre de cierre de cada año.
+    ('desempleo', 'mes', date(2003, 12, 1), 17.3, '', 'INDEC (EPH), promedio 2003 (inicio N. Kirchner)', 'flat'),
+    ('desempleo', 'mes', date(2007, 12, 9), 8.5, '', 'INDEC (EPH), promedio 2007', 'flat'),
+    ('desempleo', 'mes', date(2007, 12, 11), 8.5, '', 'INDEC (EPH), promedio 2007', 'flat'),
+    ('desempleo', 'mes', date(2011, 12, 9), 7.2, '', 'INDEC (EPH), promedio 2011', 'flat'),
+    ('desempleo', 'mes', date(2011, 12, 11), 7.2, '', 'INDEC (EPH), promedio 2011', 'flat'),
+    ('desempleo', 'mes', date(2015, 12, 9), 7.6, '', 'INDEC (EPH), promedio 2015', 'flat'),
+    ('desempleo', 'mes', date(2015, 12, 11), 7.6, '', 'INDEC (EPH), promedio 2015', 'flat'),
+    ('desempleo', 'mes', date(2019, 12, 9), 9.8, '', 'INDEC (EPH), promedio 2019', 'flat'),
+    ('desempleo', 'mes', date(2019, 12, 11), 9.8, '', 'INDEC (EPH), promedio 2019', 'flat'),
+    # Dólar oficial — sólo hasta 2019 (2003-2015 con fuentes de cotización
+    # histórica; el tramo de Milei ya lo cubre el fetch real del BCRA).
+    ('dolar_oficial', 'mes', date(2003, 5, 25), 2.94, '', 'cotización histórica BCRA, asunción N. Kirchner', 'flat'),
+    ('dolar_oficial', 'mes', date(2007, 12, 9), 3.15, '', 'cotización histórica BCRA, dic-2007', 'flat'),
+    ('dolar_oficial', 'mes', date(2007, 12, 11), 3.15, '', 'cotización histórica BCRA, dic-2007', 'flat'),
+    ('dolar_oficial', 'mes', date(2011, 12, 9), 4.30, '', 'inicio del cepo cambiario, nov-2011', 'flat'),
+    ('dolar_oficial', 'mes', date(2011, 12, 11), 4.30, '', 'inicio del cepo cambiario, nov-2011', 'flat'),
+    ('dolar_oficial', 'mes', date(2015, 12, 9), 9.83, '', 'último día antes de que Macri levantara el cepo', 'flat'),
+    ('dolar_oficial', 'mes', date(2015, 12, 11), 9.83, '', 'último día antes de que Macri levantara el cepo', 'flat'),
+    ('dolar_oficial', 'mes', date(2019, 12, 9), 62.99, '', 'último día hábil del gobierno de Macri', 'flat'),
+    ('dolar_oficial', 'mes', date(2019, 12, 11), 62.99, '', 'último día hábil del gobierno de Macri', 'flat'),
+    # Fin del mandato de Alberto Fernández — el arranque de Milei ya lo
+    # cubre el fetch real del BCRA (ver VENTANA_DIARIA), pero el cierre de
+    # AF necesita este punto manual: la ventana real arranca 1 día después
+    # de su límite a propósito, para no pisarle la comparación (ver nota
+    # en fetch_datos_reales.py).
+    ('dolar_oficial', 'mes', date(2023, 12, 9), 366.5, '', 'BCRA, último día hábil antes de la asunción de Milei', 'flat'),
+    # Riesgo país (EMBI, JP Morgan) — sin serie histórica pública (ver
+    # README), así que son puntos sueltos en las fechas que se pudieron
+    # verificar, incluida la asunción de Milei (para que su propia
+    # comparativa muestre un "AL INICIO" real y no el primer dato de hoy).
+    ('riesgo_pais', 'dia', date(2007, 3, 1), 184, '', 'JP Morgan (EMBI+), principios de 2007 — mínimo de la era Kirchner', 'flat'),
+    ('riesgo_pais', 'dia', date(2019, 12, 9), 872, '', 'JP Morgan (EMBI+), último día hábil del gobierno de Macri', 'flat'),
+    ('riesgo_pais', 'dia', date(2019, 12, 11), 1467, '', 'JP Morgan (EMBI+), saltó en un solo día tras la asunción de Alberto Fernández', 'flat'),
+    ('riesgo_pais', 'dia', date(2023, 12, 11), 1923, '', 'JP Morgan (EMBI+), asunción de Milei', 'flat'),
 ]
 
 

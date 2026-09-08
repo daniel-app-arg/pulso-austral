@@ -84,10 +84,11 @@ si por algún motivo la URL no lo trae — no hace falta tocar código.
 
 `Indicador.actualizacion_automatica` (bool) distingue, en la base y en la
 API (`/api/indicadores/?actualizacion_automatica=true`), los indicadores
-con datos reales de una fuente externa (los 8 que toca
-`fetch_datos_reales`: dólar oficial/blue, reservas BCRA, inflación
+con datos reales de una fuente externa (los 9 que toca
+`fetch_datos_reales`: dólar oficial/blue, Merval, reservas BCRA, inflación
 interanual, EMAE, desempleo, balanza comercial, exportaciones) del resto —
-ilustrativos o editoriales, que no necesitan actualizarse nunca. El flag lo fijan **dos** comandos a
+sin auto-actualizar (algunos con un punto real cargado a mano, ver
+`seed_indicadores_reales.py`; otros sin ninguna fuente encontrada todavía). El flag lo fijan **dos** comandos a
 propósito, en vez de uno: `seed_pulso_austral.py` (vía el set
 `INDICADORES_CON_DATOS_REALES`) y `fetch_datos_reales.py` (vía
 `Command.INDICADORES_GESTIONADOS`, al final de `handle()`) — así, si en el
@@ -227,7 +228,7 @@ restaurar los valores reales:
 ./venv/Scripts/python.exe manage.py fetch_datos_reales
 ```
 
-Reemplaza los valores ilustrativos de 8 indicadores por datos de fuentes
+Reemplaza los valores ilustrativos de 9 indicadores por datos de fuentes
 públicas reales, sin API key:
 
 - **`dolar_oficial`** y **`reservas_bcra`**: serie diaria completa (día,
@@ -252,6 +253,13 @@ públicas reales, sin API key:
   año). El saldo comercial puede cruzar cero (déficit ↔ superávit), así que
   su delta se expresa en valor absoluto (`_con_deltas_abs`) en vez de %
   relativo — mismo motivo que EMAE/inflación con `_con_deltas_pp`.
+- **`merval`**: solo el valor del día — igual que dólar blue, no encontramos
+  serie histórica pública para el índice — vía la API gratuita y sin key de
+  BYMA (`indicadores/services/bymadata.py`), descubierta reverseando el
+  cliente open-source [`openbymadata`](https://github.com/carvalab/openbymadata)
+  (endpoint `POST /vanoms-be-core/rest/api/bymadata/free/index-price`,
+  símbolo `"M"` = S&P MERVAL). La variación del día la da la propia BYMA
+  (`variation`), no se recalcula contra el último punto guardado.
 
 El comando es idempotente (`update_or_create`) y limpia los resabios del
 seed ilustrativo que quedan más allá del último dato real disponible (el
@@ -264,10 +272,11 @@ desactualizado — no es un problema del certificado del BCRA. `requests`
 (vía `certifi`) valida la cadena sin problema; el cliente en `bcra.py` nunca
 pasa `verify=False`.
 
-**Merval y riesgo país siguen ilustrativos**: no encontramos una fuente
-pública gratuita y sin autenticación equivalente a la del BCRA para estos
-dos. Conectarlos implica registrarse en una API de mercado (ByMA/IOL/etc.)
-o pagar un feed — pendiente de decisión, no de código. Tampoco encontramos
+**Riesgo país sigue sin auto-actualizar**: no encontramos una fuente
+pública gratuita y sin autenticación (JP Morgan/Ámbito no exponen una API
+abierta como la de BYMA). Conectarlo implica registrarse en una API de
+mercado o pagar un feed — pendiente de decisión, no de código. Hay un
+punto real cargado a mano (ver `seed_indicadores_reales.py`). Tampoco encontramos
 en datos.gob.ar una serie nacional de pobreza/indigencia ni de canasta
 básica que estuviera actualizada (las que hay quedaron en 2024/2025 o son
 solo de CABA) — siguen ilustrativas. `resultado_fiscal` e
@@ -327,7 +336,7 @@ nada.
 
 ## Pendiente
 
-- [ ] Conectar Merval y riesgo país a una fuente real (requiere elegir/pagar una API de mercado)
+- [ ] Conectar riesgo país a una fuente real (requiere elegir/pagar una API de mercado) — Merval ya se conectó vía BYMA
 - [ ] Reemplazar los valores ilustrativos de pobreza, producción (salvo EMAE), institucional, bienestar y percepcion — la mayoría no tiene una fuente pública tan simple como la del BCRA/datos.gob.ar (sector_externo ya tiene 2 de 4 reales: balanza comercial y exportaciones)
 - [ ] Cron / Celery beat que corra `fetch_datos_reales` periódicamente
 - [ ] Revisar a mano las caracterizaciones de `seed_editorial` (es un punto de partida, no la última palabra)

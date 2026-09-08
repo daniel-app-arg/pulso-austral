@@ -703,6 +703,22 @@ a.pa-noticia-fuente:hover {
   background: white;
   border-bottom: 3px solid var(--estado-color, var(--ochre));
 }
+/* Variante chica: la misma tarjeta pero como card inline dentro de una
+ * página (ej. el índice de un gobierno puntual en "Por gobierno"), no
+ * como banner de ancho completo pegado arriba de todo. */
+.pa-pulso-banner-chico {
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--estado-color, var(--ochre));
+  border-radius: 8px;
+  margin: 12px 0 20px;
+}
+.pa-pulso-banner-chico .pa-pulso-inner {
+  max-width: none;
+  padding: 14px 18px;
+}
+.pa-pulso-banner-chico .pa-pulso-score {
+  font-size: 32px;
+}
 .pa-pulso-inner {
   max-width: 980px;
   margin: 0 auto;

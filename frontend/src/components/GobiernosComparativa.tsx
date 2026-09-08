@@ -3,6 +3,7 @@
 import { useMemo, useState } from 'react';
 import type { CategoriaDTO, GobiernoResumenDTO, ResumenIndicadorDTO } from '@/lib/types';
 import { fechaCortaConAnio } from '@/lib/format';
+import { IndiceGeneralGobierno } from './IndiceGeneralGobierno';
 import { TrendIcon } from './TrendIcon';
 
 function formatNumero(valor: number, decimales = 2): string {
@@ -101,6 +102,8 @@ export function GobiernosComparativa({
         {resumen.gobierno.partido && <>{resumen.gobierno.partido} · </>}
         {fechaCortaConAnio(resumen.desde)} — {enCurso ? 'en curso' : fechaCortaConAnio(resumen.hasta)}
       </p>
+
+      <IndiceGeneralGobierno data={resumen.indice_general} enCurso={enCurso} />
 
       <div className="pa-gob-table-wrap">
         {categorias.map((cat) => {

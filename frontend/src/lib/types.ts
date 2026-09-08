@@ -153,10 +153,19 @@ export interface ResumenIndicadorDTO {
   cantidad_puntos?: number;
 }
 
+export interface IndiceGeneralGobiernoDTO {
+  score: number | null;
+  mejorando: number;
+  empeorando: number;
+  sin_cambio: number;
+  total: number;
+}
+
 export interface GobiernoResumenDTO {
   gobierno: GobiernoDTO;
   desde: string;
   hasta: string;
+  indice_general: IndiceGeneralGobiernoDTO;
   indicadores: ResumenIndicadorDTO[];
 }
 

@@ -97,6 +97,7 @@ FUENTES = [
     ("OPSA-UBA", "https://www.psi.uba.ar/"),
     ("El Cronista", "https://www.cronista.com/"),
     ("Perfil", "https://www.perfil.com/"),
+    ("BYMA (S&P MERVAL)", "https://www.byma.com.ar/"),
 ]
 
 # Indicadores que fetch_datos_reales.py reemplaza con datos reales de una
@@ -109,7 +110,7 @@ FUENTES = [
 # valores de IndicadorValor.
 INDICADORES_CON_DATOS_REALES = {
     'dolar_oficial', 'dolar_blue', 'reservas_bcra', 'inflacion_interanual', 'emae', 'desempleo',
-    'balanza_comercial', 'exportaciones',
+    'balanza_comercial', 'exportaciones', 'merval',
 }
 
 # A pedido explícito de no mostrar ningún número que no salga de una
@@ -222,8 +223,12 @@ INDICADORES = [
         None, None, 1380, "-0.7% hoy", "down",
     ),
     (
-        "merval", "macro", "Merval", "numerico", "pts", True, "Ámbito Financiero", 0,
-        None, None, 1852340, "+1.8% hoy", "up",
+        # Auto-actualizable desde hoy (BYMA, ver fetch_datos_reales.py) —
+        # el valor de este tuple no se usa (Merval no está en
+        # INDICADORES_CON_VALORES_REALES), pero se deja fuente_nombre
+        # correcto para que la tarjeta cite bien la fuente real.
+        "merval", "macro", "Merval", "numerico", "pts", True, "BYMA (S&P MERVAL)", 0,
+        None, None, None, "", "flat",
     ),
     (
         "inflacion_interanual", "macro", "Inflación interanual", "numerico", "%", False, "INDEC", 1,
@@ -520,13 +525,32 @@ INDICADORES = [
 # medio y url reales).
 NOTICIAS = []
 
-# Vacío a propósito: la lista original tenía 18 titulares inventados para
-# probar el diseño de la línea de tiempo (idéntica al MOCK_TIMELINE del
-# frontend) — no eran hechos verificados, así que se sacaron a pedido
-# explícito de limpiar todo dato que no salga de una fuente real. La
-# "Línea de tiempo" del dashboard queda vacía hasta que se cargue acá un
-# evento real, sourceado como los de `seed_noticias_reales.py`.
-TIMELINE = []
+# Reemplaza la lista original de 18 titulares inventados (idéntica al
+# MOCK_TIMELINE del frontend) por hechos reales — mismos que ya están
+# verificados y sourceados en seed_noticias_reales.py, resumidos acá en
+# formato de línea de tiempo (fecha, título corto, sentimiento, categoría).
+TIMELINE = [
+    (date(2023, 12, 5), "Argentina repite bajos resultados en las pruebas PISA", "negativo", "educacion"),
+    (date(2023, 12, 13), "El Gobierno devalúa el peso 118% a dos días de asumir Milei", "negativo", "macro"),
+    (date(2024, 3, 9), "Bullrich despliega fuerzas federales en Rosario tras la ola narco", "neutral", "seguridad"),
+    (date(2024, 4, 16), "Argentina compra 24 aviones de combate F-16 a Dinamarca", "positivo", "desarrollo_militar"),
+    (date(2024, 9, 26), "La pobreza trepa a 52,9%, la más alta en 20 años", "negativo", "pobreza"),
+    (date(2024, 10, 3), "Milei veta la Ley de Financiamiento Universitario", "negativo", "educacion"),
+    (date(2024, 11, 8), "El blanqueo de capitales supera los US$32.000 millones", "positivo", "sector_externo"),
+    (date(2024, 12, 2), "El PAMI restringe el acceso a medicamentos gratis para jubilados", "negativo", "bienestar"),
+    (date(2024, 12, 31), "Liquidación récord del agro: más de US$25.000 millones en 2024", "positivo", "produccion"),
+    (date(2025, 1, 14), "La inflación de 2024 cierra en 117,8%, casi la mitad que el año anterior", "positivo", "macro"),
+    (date(2025, 1, 17), "Argentina cierra 2024 con superávit fiscal por primera vez en 14 años", "positivo", "macro"),
+    (date(2025, 4, 11), "Milei elimina el cepo cambiario tras 15 años de controles", "positivo", "macro"),
+    (date(2025, 5, 3), "El Gobierno pone un techo de 1% mensual a los aumentos salariales", "negativo", "empleo"),
+    (date(2025, 10, 14), "Trump recibe a Milei en la Casa Blanca y condiciona el apoyo a las elecciones", "neutral", "geo"),
+    (date(2025, 10, 28), "El riesgo país cierra en mínimos de ocho años tras el triunfo electoral", "positivo", "macro"),
+    (date(2026, 1, 22), "Argentina registra la menor tasa de homicidios de su historia", "positivo", "seguridad"),
+    (date(2026, 2, 19), "La balanza comercial arranca 2026 con superávit de US$1.987 millones", "positivo", "sector_externo"),
+    (date(2026, 5, 21), "El FMI aprueba la 2ª revisión y destraba un desembolso de US$1.000 millones", "positivo", "geo"),
+    (date(2026, 7, 21), "S&P, Fitch y Moody's alinean a Argentina en B- por 1ª vez en una década", "positivo", "macro"),
+    (date(2026, 9, 7), "Vuelve la inscripción al Servicio Militar Voluntario con edad ampliada", "neutral", "desarrollo_militar"),
+]
 
 
 class Command(BaseCommand):

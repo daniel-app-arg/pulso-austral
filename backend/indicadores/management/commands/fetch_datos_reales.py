@@ -10,17 +10,22 @@ reales, tomados de fuentes públicas gratuitas y sin necesidad de API key:
   cada año.
 - Dólar blue: solo el valor del día, vía dolarapi.com (mercado informal,
   el BCRA no lo publica).
+- Merval: solo el valor del día, vía la API pública de BYMA (descubierta
+  reverseando el cliente open-source `openbymadata` — ver
+  `indicadores/services/bymadata.py`). No hay serie histórica pública
+  para el índice (sí para acciones individuales, pero no es lo mismo),
+  así que queda con el mismo patrón que dólar blue: un único punto 'dia'.
 - EMAE y Desempleo: series de INDEC vía la API de datos.gob.ar (agrega
   datasets de varios organismos). El desempleo es trimestral en origen —
   se guarda igual bajo granularidad 'mes' (con la fecha de inicio del
   trimestre), mismo criterio que ya usábamos para datos de baja frecuencia.
 
-Merval y riesgo país quedan pendientes: no encontramos una fuente pública
-gratuita y sin autenticación equivalente a las de arriba — conectar esos
-dos con datos reales significa contratar/registrar una API de mercado
-(ver backend/README.md). Tampoco encontramos, en datos.gob.ar, una serie
-nacional de pobreza/indigencia ni de canasta básica que estuviera
-actualizada — quedan igual de ilustrativas por ahora.
+Riesgo país queda pendiente: no encontramos una fuente pública gratuita y
+sin autenticación — conectarlo significa contratar/registrar una API de
+mercado (ver backend/README.md). Tampoco encontramos, en datos.gob.ar,
+una serie nacional de pobreza/indigencia ni de canasta básica que
+estuviera actualizada — quedan igual sin auto-actualizar por ahora (hay
+puntos reales sueltos cargados a mano, ver seed_indicadores_reales.py).
 
 Pensado para correrse periódicamente (cron / Celery beat) — es idempotente,
 usa `bulk_create(update_conflicts=True)` (upsert vía ON CONFLICT DO UPDATE)
@@ -38,12 +43,23 @@ from datetime import date, timedelta
 from django.core.management.base import BaseCommand
 
 from indicadores.models import Indicador, IndicadorValor
-from indicadores.services import bcra, datos_gob_ar, dolarapi
+from indicadores.services import bcra, bymadata, datos_gob_ar, dolarapi
 from indicadores.services.bcra import BcraError
+from indicadores.services.bymadata import BymaDataError
 from indicadores.services.datos_gob_ar import DatosGobArError
 from indicadores.services.dolarapi import DolarApiError
 
-VENTANA_DIARIA = timedelta(days=400)  # un poco más de 13 meses de historia
+# Cubre todo el mandato de Milei (asumió 10-dic-2023) para que el "AL
+# INICIO" de la comparativa por gobierno para dólar oficial y reservas
+# salga solo del fetch real. Ojo: si la ventana empezara EL 10-dic o
+# antes, esos días quedarían del lado de Alberto Fernández (su rango es
+# inclusive hasta esa fecha) y la serie diaria real — con muchísimos más
+# puntos que los pocos puntos sueltos que carga seed_indicadores_reales.py
+# para gobiernos viejos — le "ganaría" el desempate de granularidad en
+# _resumir_indicador, pisando su comparación con solo un puñado de días
+# de su último mes en vez de todo su mandato. Por eso arranca 1 día
+# después del límite (11-dic-2023): cero superposición con su rango.
+VENTANA_DIARIA = timedelta(days=1000)
 
 # IDs de series de datos.gob.ar ya resueltas a mano (búsquedas hechas contra
 # https://apis.datos.gob.ar/series/api/search/?q=<texto>).
@@ -169,7 +185,7 @@ class Command(BaseCommand):
     # nuevo acá sin recordar tocar el otro archivo no lo deje sin marcar.
     INDICADORES_GESTIONADOS = [
         'dolar_oficial', 'reservas_bcra', 'inflacion_interanual', 'dolar_blue', 'emae', 'desempleo',
-        'balanza_comercial', 'exportaciones',
+        'balanza_comercial', 'exportaciones', 'merval',
     ]
 
     def handle(self, *args, **options):
@@ -185,6 +201,7 @@ class Command(BaseCommand):
         )
         self._actualizar_inflacion()
         self._actualizar_dolar_blue()
+        self._actualizar_merval()
         self._actualizar_desde_datos_gob_ar(
             'emae', mensual_id=ID_EMAE_MENSUAL, anual_id=ID_EMAE_ANUAL, sufijo_mes='vs. mes anterior',
         )
@@ -310,6 +327,30 @@ class Command(BaseCommand):
             defaults={'valor_numerico': valor, 'delta_texto': delta_texto, 'trend': trend},
         )
         self.stdout.write(self.style.SUCCESS(f'{indicador_id}: ${valor} (dolarapi.com, casa "blue").'))
+
+    def _actualizar_merval(self):
+        indicador_id = 'merval'
+        if not Indicador.objects.filter(id=indicador_id).exists():
+            self.stdout.write(self.style.WARNING(f'{indicador_id}: no existe en la base, se salta.'))
+            return
+        try:
+            merval = bymadata.obtener_merval()
+        except BymaDataError as exc:
+            self.stdout.write(self.style.ERROR(f'{indicador_id}: {exc}'))
+            return
+
+        # BYMA ya da la variación vs. el cierre anterior — se usa esa en vez
+        # de recalcularla contra el último punto guardado, más autoritativa
+        # (y evita depender de que ayer se haya corrido este comando).
+        diff_pct = merval['variacion_pct']
+        trend = 'up' if diff_pct > 0 else ('down' if diff_pct < 0 else 'flat')
+        delta_texto = f'{"+" if diff_pct >= 0 else ""}{round(diff_pct, 1)}% hoy'
+
+        IndicadorValor.objects.update_or_create(
+            indicador_id=indicador_id, fecha=merval['fecha'], granularidad='dia',
+            defaults={'valor_numerico': merval['valor'], 'delta_texto': delta_texto, 'trend': trend},
+        )
+        self.stdout.write(self.style.SUCCESS(f'{indicador_id}: {merval["valor"]} pts (BYMA, S&P MERVAL).'))
 
     def _actualizar_desde_datos_gob_ar(self, indicador_id, *, mensual_id, anual_id, sufijo_mes):
         """Genérico para series de datos.gob.ar con una variante de mayor

@@ -214,11 +214,44 @@ def _resumir_indicador(indicador, desde, hasta):
     # absoluta, que sigue siendo válida.
     variacion_pct = (variacion_abs / v_inicio * 100) if (variacion_abs is not None and v_inicio and v_inicio > 0) else None
 
+    # Misma metodología que el índice general (services/pulso_index.py):
+    # solo los indicadores con polaridad definida entran en "mejora" o
+    # "empeora" — dólar, Merval, gasto militar, etc. quedan afuera del
+    # cómputo agregado por la misma razón (no hay consenso sobre qué
+    # dirección es "mejor"), aunque igual se muestran en la tabla.
+    direccion = None
+    if variacion_abs is not None and indicador.polaridad in ('positivo', 'negativo'):
+        if variacion_abs == 0:
+            direccion = 'sin_cambio'
+        else:
+            mejora = (variacion_abs > 0) == (indicador.polaridad == 'positivo')
+            direccion = 'mejora' if mejora else 'empeora'
+
     return {
         **base, 'sin_datos': False,
         'valor_inicio': v_inicio, 'valor_fin': v_fin,
         'variacion_abs': variacion_abs, 'variacion_pct': variacion_pct, 'promedio': promedio,
         'fecha_inicio': inicio.fecha, 'fecha_fin': fin.fecha, 'cantidad_puntos': len(puntos),
+        'direccion': direccion,
+    }
+
+
+def _indice_general_gobierno(resumen: list[dict]) -> dict:
+    """Mismo índice de difusión que el Pulso Index general (ver
+    services/pulso_index.py: score = 50 + 50×(mejora-empeora)/total), pero
+    calculado sobre el "al inicio → al final" de ESTE gobierno en vez de
+    la última foto del país — responde "¿este gobierno dejó más
+    indicadores mejor o peor de como los encontró?", con los mismos
+    indicadores e igual criterio de exclusión (dólar, Merval, gasto
+    militar, aprobación de gobierno, etc. quedan afuera, no por olvido)."""
+    mejorando = sum(1 for r in resumen if r.get('direccion') == 'mejora')
+    empeorando = sum(1 for r in resumen if r.get('direccion') == 'empeora')
+    sin_cambio = sum(1 for r in resumen if r.get('direccion') == 'sin_cambio')
+    total = mejorando + empeorando + sin_cambio
+    score = 50 + 50 * (mejorando - empeorando) / total if total else None
+    return {
+        'score': round(score, 1) if score is not None else None,
+        'mejorando': mejorando, 'empeorando': empeorando, 'sin_cambio': sin_cambio, 'total': total,
     }
 
 
@@ -243,6 +276,7 @@ class GobiernoResumenView(APIView):
             'gobierno': GobiernoSerializer(gobierno).data,
             'desde': desde,
             'hasta': hasta,
+            'indice_general': _indice_general_gobierno(resumen),
             'indicadores': resumen,
         })
 
